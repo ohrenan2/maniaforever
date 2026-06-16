@@ -103,9 +103,10 @@
         select.status-pago { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
         select.status-neutro { background: #f1f5f9; color: #475569; border: 1px solid var(--border); }
 
-        /* AREAS DE IMPRESSÃO */
+        /* AREAS DE IMPRESSÃO (ESCONDIDAS NA TELA NORMAL) */
         #print-area-catalogo, #print-area-relatorio, #print-area-etiquetas { display: none; }
         
+        /* REGRAS MÁGICAS DE IMPRESSÃO - CORES FORÇADAS E ESTILOS */
         @media print {
             * { 
                 -webkit-print-color-adjust: exact !important; 
@@ -124,7 +125,7 @@
             body.printing-relatorio #print-area-relatorio, body.printing-relatorio #print-area-relatorio * { visibility: visible; }
             body.printing-relatorio #print-area-relatorio { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; }
             
-            /* --- ETIQUETAS ARGOX (40x25mm) --- */
+            /* --- ETIQUETAS ARGOX (40x25mm) EM MASSA --- */
             @page { margin: 0; }
             body.printing-etiquetas { background: #fff; margin: 0; padding: 0; }
             body.printing-etiquetas #print-area-etiquetas, body.printing-etiquetas #print-area-etiquetas * { visibility: visible; }
@@ -142,7 +143,7 @@
             .etiq-desc { font-size: 6pt; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
             .etiq-preco { font-size: 9pt; font-weight: 900; margin-top: 2px; }
 
-            /* ESTILOS DECORADOS A4 */
+            /* ESTILOS DECORADOS COMUNS PARA PDF A4 */
             .pdf-header { text-align: center; border-bottom: 4px solid #ec4899; padding-bottom: 15px; margin-bottom: 25px; }
             .pdf-header h1 { font-size: 28px; color: #000; text-transform: uppercase; margin: 0; letter-spacing: 1px;}
             .pdf-header h1 span { color: #ec4899; }
@@ -184,7 +185,7 @@
         <div class="nav-item" onclick="showSection('lancamento')"><i class="fa-solid fa-cart-arrow-down"></i> Lançamento Rápido</div>
         <div class="nav-item" onclick="showSection('por-pessoa')"><i class="fa-solid fa-users"></i> Fechamento Sacolas</div>
         <div class="nav-item" onclick="showSection('logistica')"><i class="fa-solid fa-truck-fast"></i> Controle / Logística</div>
-        <div class="nav-item" onclick="showSection('nuvem')" style="border-top: 1px solid #333; margin-top: 1rem; padding-top: 1rem;"><i class="fa-solid fa-cloud-arrow-up"></i> Nuvem / Backup</div>
+        <div class="nav-item" onclick="showSection('nuvem')" style="border-top: 1px solid #333; margin-top: 1rem; padding-top: 1rem;"><i class="fa-brands fa-google-drive"></i> Nuvem (Google Drive)</div>
         <div class="nav-item" onclick="limparLive()" style="margin-top: auto; color: var(--danger);"><i class="fa-solid fa-trash-can"></i> Encerrar/Limpar Live</div>
     </div>
 
@@ -242,6 +243,7 @@
                 </form>
             </div>
 
+            <!-- IMPRESSÃO EM MASSA DAS ETIQUETAS -->
             <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
                 <button class="btn-outline" style="width: auto; background: var(--primary); color: white; border: none;" onclick="imprimirEtiquetasEmMassa()"><i class="fa-solid fa-tags"></i> Imprimir Etiquetas Selecionadas (Argox)</button>
             </div>
@@ -323,55 +325,37 @@
             </div>
         </div>
 
-        <!-- ABA NUVEM GERAL COM 3 OPÇÕES -->
+        <!-- ABA NUVEM GOOGLE DRIVE -->
         <div id="nuvem" class="section">
-            <h2>Nuvem MF - Sincronização</h2>
-            <p style="color: #64748b; margin-bottom: 2rem;">Escolha o método de sincronização que preferir para puxar os dados pelo celular de forma rápida e segura.</p>
+            <h2>Nuvem MF - Google Drive</h2>
+            <p style="color: #64748b; margin-bottom: 2rem;">Cole aqui o <b>Link do App da Web</b> gerado pela sua Planilha do Google para manter tudo salvo no seu Drive.</p>
 
-            <h3 style="margin-bottom: 1rem; color: var(--primary);"><i class="fa-brands fa-google-drive"></i> Opção 1: Google Drive (Recomendado)</h3>
-            <div class="card" style="border: 2px solid var(--accent-light); padding: 1.5rem; margin-bottom: 1rem;">
+            <div class="card" style="border: 2px solid var(--accent-light); padding: 1.5rem;">
                 <div class="input-group" style="margin-bottom: 0;">
                     <label>Link do Google Script (URL):</label>
                     <input type="text" id="url-google-script" placeholder="https://script.google.com/macros/s/..." onchange="salvarLinkDrive()">
                 </div>
             </div>
-            <div class="grid-2" style="margin-bottom: 2rem;">
-                <div class="card" style="border-top: 4px solid var(--accent); margin-bottom: 0;">
-                    <button class="btn-primary" id="btn-gerar-drive" onclick="salvarNoDrive()"><i class="fa-solid fa-cloud-arrow-up"></i> Salvar no Drive</button>
-                </div>
-                <div class="card" style="border-top: 4px solid var(--success); margin-bottom: 0;">
-                    <button class="btn-success" id="btn-baixar-drive" onclick="baixarDoDrive()"><i class="fa-solid fa-cloud-arrow-down"></i> Puxar do Drive</button>
-                </div>
-            </div>
 
-            <hr style="border: none; border-top: 1px solid var(--border); margin: 2rem 0;">
-
-            <h3 style="margin-bottom: 1rem; color: var(--primary);"><i class="fa-solid fa-cloud"></i> Opção 2: Nuvem Rápida (Código Numérico)</h3>
             <div class="grid-2">
                 <div class="card" style="border-top: 4px solid var(--accent);">
-                    <button class="btn-primary" id="btn-gerar-nuvem" onclick="salvarNaNuvem()"><i class="fa-solid fa-cloud-arrow-up"></i> Gerar Código Numérico</button>
-                    <div style="margin-top: 15px; text-align: center;">
-                        <input type="text" id="nuvem-codigo-gerado" readonly style="font-size: 1.2rem; font-weight: 900; text-align: center; color: var(--accent); cursor: copy;" onclick="this.select(); document.execCommand('copy'); alert('Copiado!');" placeholder="---">
-                    </div>
+                    <h3>1. Fazer Backup no Drive</h3>
+                    <button class="btn-primary" id="btn-gerar-nuvem" onclick="salvarNoDrive()"><i class="fa-solid fa-cloud-arrow-up"></i> Salvar na Planilha</button>
+                    <div id="loading-nuvem" style="display:none; text-align:center; margin-top:10px;"><i class="fa-solid fa-spinner fa-spin"></i> Conectando...</div>
                 </div>
-                <div class="card" style="border-top: 4px solid var(--success);">
-                    <input type="text" id="nuvem-codigo-importar" placeholder="Cole o código gerado..." style="font-size: 1.1rem; text-align: center; margin-bottom: 1rem; font-weight: bold;">
-                    <button class="btn-success" id="btn-baixar-nuvem" onclick="baixarDaNuvem()"><i class="fa-solid fa-cloud-arrow-down"></i> Sincronizar Agora</button>
-                </div>
-            </div>
 
-            <div style="margin-top: 1rem;">
-                <details style="background: #f1f5f9; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer;">
-                    <summary style="font-weight: bold; color: #475569;">Opção 3: Modo Offline (Copiar Texto Compacto)</summary>
-                    <p style="font-size: 0.85rem; color: #64748b; margin-top: 10px;">Se a operadora bloquear a internet, gere o código abaixo e envie no WhatsApp.</p>
-                    <textarea id="sync-code-offline" rows="3" readonly style="width:100%; margin-top:10px; padding:10px; font-family:monospace; font-size:0.8rem;"></textarea>
-                    <button class="btn-outline" style="margin-top:10px; width: 100%;" onclick="gerarOffline()"><i class="fa-solid fa-file-zipper"></i> Gerar Texto Offline</button>
-                </details>
+                <div class="card" style="border-top: 4px solid var(--success);">
+                    <h3>2. Puxar do Drive (Celular)</h3>
+                    <button class="btn-success" id="btn-baixar-nuvem" onclick="baixarDoDrive()"><i class="fa-solid fa-cloud-arrow-down"></i> Sincronizar Neste Aparelho</button>
+                    <div id="loading-baixar" style="display:none; text-align:center; margin-top:10px; color: var(--success);"><i class="fa-solid fa-spinner fa-spin"></i> Baixando dados...</div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- ÁREAS DE IMPRESSÃO (ESCONDIDAS) -->
+    
+    <!-- 1. CATÁLOGO A4 LINDINHO -->
     <div id="print-area-catalogo">
         <div class="pdf-header">
             <h1>MANIA FOREVER <span>LIVE SHOP</span></h1>
@@ -383,6 +367,7 @@
         </table>
     </div>
 
+    <!-- 2. RELATÓRIO A4 LINDINHO -->
     <div id="print-area-relatorio">
         <div class="pdf-header">
             <h1>MANIA FOREVER <span>FECHAMENTO DA LIVE</span></h1>
@@ -398,6 +383,7 @@
         </table>
     </div>
 
+    <!-- 3. ETIQUETAS EM MASSA ARGOX -->
     <div id="print-area-etiquetas">
         <!-- As etiquetas entram aqui dinamicamente -->
     </div>
@@ -452,7 +438,7 @@
         }
     }
 
-    // IMPRESSÃO DE ETIQUETAS
+    // --- SELEÇÃO DE CHECKBOX PARA ETIQUETAS ---
     function toggleCheckAll() {
         const master = document.getElementById('check-all').checked;
         const boxes = document.querySelectorAll('.check-peca');
@@ -461,10 +447,14 @@
 
     function imprimirEtiquetasEmMassa() {
         const selecionados = document.querySelectorAll('.check-peca:checked');
-        if(selecionados.length === 0) return alert("Selecione pelo menos uma peça!");
+        if(selecionados.length === 0) {
+            alert("Selecione pelo menos uma peça (marcando as caixinhas na tabela) para imprimir a etiqueta!");
+            return;
+        }
 
         const area = document.getElementById('print-area-etiquetas');
         area.innerHTML = "";
+
         selecionados.forEach(cb => {
             const p = dbLive.pecas.find(x => x.codigo === cb.value);
             if(p) {
@@ -474,11 +464,14 @@
                         <div class="etiq-cod">${p.codigo}</div>
                         <div class="etiq-desc">${p.nome.replace(/'/g,"\\'").substring(0,25)}</div>
                         <div class="etiq-preco">${formatarMoeda(p.preco)}</div>
-                    </div>`;
+                    </div>
+                `;
             }
         });
 
-        document.body.classList.add('printing-etiquetas'); window.print();
+        document.body.classList.add('printing-etiquetas'); 
+        window.print();
+        
         setTimeout(() => { 
             document.body.classList.remove('printing-etiquetas'); 
             selecionados.forEach(cb => cb.checked = false);
@@ -486,7 +479,7 @@
         }, 500);
     }
 
-    // IMPRESSÃO DOS PDFs
+    // --- IMPRESSÕES PDFs A4 COLORIDOS ---
     function imprimirPDFPecas() {
         const tb = document.getElementById('pdf-tbody-catalogo'); tb.innerHTML = "";
         [...dbLive.pecas].sort((a,b) => a.preco - b.preco).forEach(p => {
@@ -511,14 +504,16 @@
         setTimeout(() => { document.body.classList.remove('printing-relatorio'); }, 500);
     }
 
-    // LANÇAMENTO
+    // --- LANÇAMENTO ---
     let pecaSelecionadaParaVenda = null;
     function buscarPecaPorCodigo() {
         let ipt = document.getElementById('venda-codigo-busca').value.toUpperCase().trim();
         const prev = document.getElementById('preview-peca'); const btn = document.getElementById('btn-confirmar-venda');
         if(!ipt) { prev.style.display = 'none'; btn.disabled = true; return; }
+        
         let cBusca = /^\d+$/.test(ipt) ? "MF-" + String(parseInt(ipt, 10)).padStart(3, '0') : ipt;
         const p = dbLive.pecas.find(x => x.codigo === cBusca && !x.vendida);
+        
         if (p) {
             pecaSelecionadaParaVenda = p;
             document.getElementById('preview-codigo-real').innerText = p.codigo;
@@ -526,7 +521,9 @@
             document.getElementById('preview-cor').innerText = p.cor;
             document.getElementById('preview-preco').innerText = formatarMoeda(p.preco);
             prev.style.display = 'block'; btn.disabled = false;
-        } else { pecaSelecionadaParaVenda = null; prev.style.display = 'none'; btn.disabled = true; }
+        } else {
+            pecaSelecionadaParaVenda = null; prev.style.display = 'none'; btn.disabled = true;
+        }
     }
 
     function registrarVenda() {
@@ -537,14 +534,19 @@
             fone: document.getElementById('venda-cliente-fone').value.trim(), codigoPeca: pecaSelecionadaParaVenda.codigo,
             nomePeca: pecaSelecionadaParaVenda.nome, corPeca: pecaSelecionadaParaVenda.cor, precoFinal: pecaSelecionadaParaVenda.preco
         });
+
         const k = cNome.toUpperCase();
         if(!dbLive.status[k]) dbLive.status[k] = { pago: false, forma: "", entrega: "Aguardando" };
+
         const p = dbLive.pecas.find(x => x.codigo === pecaSelecionadaParaVenda.codigo);
         if(p) p.vendida = true;
+        
         salvarBanco();
         document.getElementById('venda-codigo-busca').value = '';
         buscarPecaPorCodigo(); atualizarTelas();
-        const btn = document.getElementById('btn-confirmar-venda'); btn.innerHTML = "<i class='fa-solid fa-check'></i> Arrematado!";
+        
+        const btn = document.getElementById('btn-confirmar-venda');
+        btn.innerHTML = "<i class='fa-solid fa-check'></i> Arrematado!";
         setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-check-circle'></i> Confirmar Arremate"; }, 1500);
     }
 
@@ -557,7 +559,7 @@
         }
     }
 
-    // LOGÍSTICA
+    // --- LOGÍSTICA ---
     function agruparSacolas() {
         const s = {};
         dbLive.vendas.forEach(v => {
@@ -585,7 +587,7 @@
         window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, '_blank');
     }
 
-    // NUVEM: PACOTES
+    // --- NOVA NUVEM (GOOGLE DRIVE APPS SCRIPT) ---
     function prepararPacote() {
         return {
             p: dbLive.pecas.map(x => [x.codigo, x.nome, x.cor, x.preco, x.vendida?1:0]),
@@ -601,88 +603,61 @@
         return nDb;
     }
 
-    // NUVEM: GOOGLE DRIVE
-    function salvarLinkDrive() { localStorage.setItem('mania_forever_drive_url', document.getElementById('url-google-script').value.trim()); }
+    function salvarLinkDrive() {
+        const url = document.getElementById('url-google-script').value.trim();
+        localStorage.setItem('mania_forever_drive_url', url);
+    }
 
     async function salvarNoDrive() {
         const url = document.getElementById('url-google-script').value.trim();
-        if(!url) return alert("Cole o Link do App da Web do Google Script!");
-        document.getElementById('btn-gerar-drive').innerText = "Salvando...";
+        if(!url) return alert("Cole o Link do App da Web do Google Script primeiro!");
+        
+        document.getElementById('btn-gerar-nuvem').style.display = 'none';
+        document.getElementById('loading-nuvem').style.display = 'block';
+        
         try {
             const dataToSave = LZString.compressToBase64(JSON.stringify(prepararPacote()));
-            await fetch(url, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: dataToSave });
+            await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: dataToSave
+            });
             alert("Backup salvo no seu Google Drive com sucesso!");
-        } catch(e) { alert("Erro de conexão com o Drive."); }
-        document.getElementById('btn-gerar-drive').innerHTML = "<i class='fa-solid fa-cloud-arrow-up'></i> Salvar no Drive";
+        } catch(e) { 
+            alert("Erro de conexão. Certifique-se de que configurou o Script como 'Qualquer Pessoa'."); 
+        }
+        
+        document.getElementById('btn-gerar-nuvem').style.display = 'inline-block';
+        document.getElementById('loading-nuvem').style.display = 'none';
     }
 
     async function baixarDoDrive() {
         const url = document.getElementById('url-google-script').value.trim();
-        if(!url) return alert("Cole o Link do App da Web do Google Script!");
+        if(!url) return alert("Cole o Link do App da Web do Google Script primeiro!");
         if(!confirm("Substituir dados atuais pelos da nuvem?")) return;
-        document.getElementById('btn-baixar-drive').innerText = "Baixando...";
+
+        document.getElementById('btn-baixar-nuvem').style.display = 'none';
+        document.getElementById('loading-baixar').style.display = 'block';
+        
         try {
             const resp = await fetch(url);
             const data64 = await resp.text();
+            
             if(data64) {
                 dbLive = desempacotarPacote(JSON.parse(LZString.decompressFromBase64(data64)));
-                salvarBanco(); alert("Dados Sincronizados!"); showSection('dashboard');
-            } else { alert("Nenhum dado encontrado."); }
-        } catch(e) { alert("Erro ao baixar do Drive."); }
-        document.getElementById('btn-baixar-drive').innerHTML = "<i class='fa-solid fa-cloud-arrow-down'></i> Puxar do Drive";
+                salvarBanco();
+                alert("Dados Sincronizados!");
+                showSection('dashboard');
+            } else { alert("Nenhum dado encontrado no Drive."); }
+        } catch(e) { 
+            alert("Erro ao baixar. O link pode estar incorreto."); 
+        }
+        
+        document.getElementById('btn-baixar-nuvem').style.display = 'inline-block';
+        document.getElementById('loading-baixar').style.display = 'none';
     }
 
-    // NUVEM: JSONBIN PÚBLICO
-    async function salvarNaNuvem() {
-        document.getElementById('btn-gerar-nuvem').innerText = "Conectando...";
-        try {
-            const resp = await fetch("https://api.jsonbin.io/v3/b", {
-                method: "POST", headers: { "Content-Type": "application/json", "X-Bin-Private": "false" },
-                body: JSON.stringify(prepararPacote())
-            });
-            if(!resp.ok) throw new Error();
-            const data = await resp.json();
-            document.getElementById('nuvem-codigo-gerado').value = data.metadata.id;
-        } catch(e) { alert("Erro. Tente o modo offline ou Google Drive."); }
-        document.getElementById('btn-gerar-nuvem').innerHTML = "<i class='fa-solid fa-cloud-arrow-up'></i> Gerar Código Numérico";
-    }
-
-    async function baixarDaNuvem() {
-        let id = document.getElementById('nuvem-codigo-importar').value.trim();
-        if(!id) return alert("Digite o código!");
-        if(id.length > 50) return lerOffline(id); 
-
-        if(!confirm("Substituir dados atuais?")) return;
-        document.getElementById('btn-baixar-nuvem').innerText = "Baixando...";
-        try {
-            const resp = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`);
-            if(resp.ok) {
-                const data = await resp.json();
-                dbLive = desempacotarPacote(data.record);
-                salvarBanco(); alert("Sincronizado!"); showSection('dashboard');
-            } else { alert("Código não encontrado."); }
-        } catch(e) { alert("Erro ao baixar."); }
-        document.getElementById('btn-baixar-nuvem').innerHTML = "<i class='fa-solid fa-cloud-arrow-down'></i> Sincronizar Agora";
-    }
-
-    // NUVEM: OFFLINE
-    function gerarOffline() {
-        const cod = LZString.compressToBase64(JSON.stringify(prepararPacote()));
-        const txt = document.getElementById('sync-code-offline');
-        txt.value = cod; txt.select(); navigator.clipboard.writeText(cod);
-        alert("Texto Offline gerado e copiado!");
-    }
-    
-    function lerOffline(codB64) {
-        if(!confirm("Substituir dados atuais pela versão offline?")) return;
-        try {
-            dbLive = desempacotarPacote(JSON.parse(LZString.decompressFromBase64(codB64)));
-            salvarBanco(); document.getElementById('nuvem-codigo-importar').value = '';
-            alert("Dados offline importados!"); showSection('dashboard');
-        } catch(e) { alert("Código offline corrompido."); }
-    }
-
-    // ATUALIZAÇÃO DA INTERFACE
+    // --- ATUALIZAR INTERFACE PRINCIPAL ---
     function atualizarTelas() {
         atualizarCodigoGerado();
 
