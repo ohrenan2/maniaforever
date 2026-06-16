@@ -6,10 +6,8 @@
     <title>Mania Forever - Sistema Live Shop</title>
     <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23ec4899'/><text x='50%' y='53%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='38' font-weight='900' fill='%23fff'>MF</text></svg>">
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Biblioteca LZ-String para comprimir o código de sincronização -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     
     <style>
@@ -18,7 +16,7 @@
             --main-bg: #f8fafc; --card-bg: #ffffff;
             --primary: #000000; --accent: #ec4899; 
             --accent-hover: #db2777; --accent-light: #fce7f3;
-            --success: #10b981; --danger: #ef4444; --border: #e2e8f0;
+            --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --border: #e2e8f0;
             --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
             --shadow-float: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             --radius-md: 10px; --radius-lg: 16px;
@@ -84,6 +82,7 @@
         .bg-green { background: #dcfce7; color: #15803d; }
         .bg-gray { background: #f1f5f9; color: #475569; }
         .bg-red { background: #fee2e2; color: #b91c1c; }
+        .bg-yellow { background: #fef3c7; color: #b45309; }
 
         .btn-delete { background: transparent; color: #94a3b8; border: none; cursor: pointer; font-size: 1.2rem; padding: 4px 8px; border-radius: 4px; transition: 0.2s; }
         .btn-delete:hover { color: var(--danger); background: #fee2e2; }
@@ -94,11 +93,32 @@
         .btn-whatsapp { background: #25D366; color: white; padding: 8px 16px; border-radius: 99px; font-weight: 700; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer;}
         .btn-whatsapp:hover { filter: brightness(1.1); }
 
-        /* MODAL DE LISTA DE PEÇAS */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s ease; }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-card { background: #ffffff; padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-float); border: 1px solid rgba(0,0,0,0.05); max-width: 500px; width: 90%; transform: translateY(30px) scale(0.95); transition: all 0.3s; display: flex; flex-direction: column; max-height: 90vh; }
-        .modal-overlay.active .modal-card { transform: translateY(0) scale(1); }
+        select.status-select { padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; width: 100%; }
+        select.status-pendente { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+        select.status-pago { background: #dcfce7; color: #15803d; border-color: #86efac; }
+        select.status-neutro { background: #f1f5f9; color: #475569; }
+
+        /* AREA DE IMPRESSÃO (PDF DECORADO) */
+        #print-area { display: none; }
+        @media print {
+            body.printing-lista * { visibility: hidden; }
+            body.printing-lista #print-area, body.printing-lista #print-area * { visibility: visible; }
+            body.printing-lista #print-area { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; }
+            body.printing-lista { background: white; }
+            
+            /* Decoração do PDF */
+            .pdf-header { text-align: center; border-bottom: 3px solid #ec4899; padding-bottom: 20px; margin-bottom: 30px; }
+            .pdf-header h1 { font-size: 32px; color: #000; text-transform: uppercase; margin: 0; letter-spacing: 2px; }
+            .pdf-header h1 span { color: #ec4899; }
+            .pdf-header p { color: #64748b; font-size: 14px; margin-top: 5px; }
+            
+            .pdf-table { width: 100%; border-collapse: collapse; }
+            .pdf-table th { background-color: #fce7f3 !important; color: #be185d !important; padding: 12px; text-align: left; font-size: 14px; border-bottom: 2px solid #ec4899; }
+            .pdf-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; color: #333; }
+            .pdf-row-vendida td { color: #94a3b8; text-decoration: line-through; }
+            .pdf-badge-vendida { color: #ef4444; font-weight: bold; font-size: 12px; text-decoration: none !important; display: inline-block; }
+            .pdf-badge-livre { color: #10b981; font-weight: bold; font-size: 12px; }
+        }
 
         @media (max-width: 900px) {
             body { flex-direction: column; }
@@ -115,37 +135,29 @@
 </head>
 <body>
 
-    <!-- MODAL LISTA DE PEÇAS -->
-    <div id="modal-lista" class="modal-overlay">
-        <div class="modal-card">
-            <h3 style="margin-top: 0; color: var(--accent);"><i class="fa-solid fa-list"></i> Lista de Peças</h3>
-            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1rem;">Copie o texto abaixo para enviar ou guardar:</p>
-            <textarea id="texto-lista-pecas" style="flex-grow: 1; min-height: 250px; font-family: monospace; font-size: 0.85rem; resize: none; margin-bottom: 1rem; padding: 15px;" readonly></textarea>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn-primary" style="background: #f1f5f9; color: #475569;" onclick="fecharModalLista()">Fechar</button>
-                <button class="btn-primary" onclick="copiarListaPecas()"><i class="fa-regular fa-copy"></i> Copiar Texto</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- CABEÇALHO MOBILE -->
     <div class="mobile-header">
         <div class="logo">MANIA FOREVER<span>LIVE SHOP</span></div>
         <button onclick="toggleMenu()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer; padding:5px;"><i class="fa-solid fa-bars"></i></button>
     </div>
     <div id="mobile-overlay" onclick="toggleMenu()"></div>
 
+    <!-- MENU LATERAL -->
     <div class="sidebar" id="sidebar">
         <div class="logo">MANIA FOREVER<span>LIVE SHOP</span></div>
         
         <div class="nav-item active" onclick="showSection('dashboard')"><i class="fa-solid fa-chart-line"></i> Vendas no Total</div>
         <div class="nav-item" onclick="showSection('pecas')"><i class="fa-solid fa-shirt"></i> Peças da Live</div>
         <div class="nav-item" onclick="showSection('lancamento')"><i class="fa-solid fa-cart-arrow-down"></i> Lançamento Rápido</div>
-        <div class="nav-item" onclick="showSection('por-pessoa')"><i class="fa-solid fa-users"></i> Venda por Pessoa</div>
-        <div class="nav-item" onclick="showSection('nuvem')" style="border-top: 1px solid #333; margin-top: 1rem; padding-top: 1rem;"><i class="fa-solid fa-cloud-arrow-up"></i> Nuvem / Sincronizar</div>
+        <div class="nav-item" onclick="showSection('por-pessoa')"><i class="fa-solid fa-users"></i> Fechamento Sacolas</div>
+        <div class="nav-item" onclick="showSection('logistica')"><i class="fa-solid fa-truck-fast"></i> Controle / Logística</div>
+        
+        <div class="nav-item" onclick="showSection('nuvem')" style="border-top: 1px solid #333; margin-top: 1rem; padding-top: 1rem;"><i class="fa-solid fa-cloud-arrow-up"></i> Nuvem / Backup</div>
         
         <div class="nav-item" onclick="limparLive()" style="margin-top: auto; color: var(--danger);"><i class="fa-solid fa-trash-can"></i> Encerrar/Limpar Live</div>
     </div>
 
+    <!-- CONTEÚDO PRINCIPAL -->
     <div class="main-content">
         
         <!-- DASHBOARD -->
@@ -167,7 +179,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Cliente</th><th>Peça</th><th>Cor/Tamanho</th><th style="text-align: right;">Valor</th></tr>
+                            <tr><th>Cliente (Nome / User)</th><th>Peça</th><th>Cor/Tamanho</th><th style="text-align: right;">Valor</th></tr>
                         </thead>
                         <tbody id="lista-ultimas-vendas"></tbody>
                     </table>
@@ -179,7 +191,7 @@
         <div id="pecas" class="section">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 2.5rem; gap: 15px;">
                 <h2 style="margin: 0;">Estoque / Peças da Live</h2>
-                <button class="btn-outline" style="width: auto;" onclick="abrirModalLista()"><i class="fa-solid fa-file-lines"></i> Gerar Lista de Peças</button>
+                <button class="btn-outline" style="width: auto;" onclick="imprimirPDFPecas()"><i class="fa-solid fa-print"></i> Imprimir Catálogo (PDF)</button>
             </div>
             
             <div class="card">
@@ -229,18 +241,27 @@
                 <form onsubmit="event.preventDefault(); registrarVenda();">
                     
                     <div class="grid-2">
+                        <!-- DADOS DA CLIENTE SEPARADOS -->
                         <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
                             <h4 style="margin-bottom: 1rem; color: var(--primary);"><i class="fa-solid fa-user"></i> Dados da Cliente</h4>
+                            
                             <div class="input-group">
-                                <label>Nome / @Instagram</label>
-                                <input type="text" id="venda-cliente-nome" required placeholder="Ex: @renata_silva">
+                                <label>Nome da Cliente (Para a mensagem)</label>
+                                <input type="text" id="venda-cliente-nome" required placeholder="Ex: Renata Silva">
                             </div>
-                            <div class="input-group" style="margin-bottom: 0;">
-                                <label>WhatsApp (Opcional)</label>
-                                <input type="text" id="venda-cliente-fone" placeholder="(XX) 9XXXX-XXXX">
+                            <div class="input-grid" style="gap: 10px; margin-bottom: 0;">
+                                <div class="input-group" style="margin-bottom: 0;">
+                                    <label>User / Instagram</label>
+                                    <input type="text" id="venda-cliente-user" placeholder="Ex: @renata_silva">
+                                </div>
+                                <div class="input-group" style="margin-bottom: 0;">
+                                    <label>WhatsApp (Opcional)</label>
+                                    <input type="text" id="venda-cliente-fone" placeholder="(XX) 9XXXX-XXXX">
+                                </div>
                             </div>
                         </div>
 
+                        <!-- BUSCA DE PEÇA -->
                         <div style="background: #fff; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--accent);">
                             <h4 style="margin-bottom: 1rem; color: var(--accent);"><i class="fa-solid fa-tag"></i> Informações da Peça</h4>
                             
@@ -269,27 +290,46 @@
             <h2>Fechamento de Sacolas</h2>
             <p style="color: #64748b; margin-bottom: 2rem;">Veja o resumo de cada cliente para enviar o total no WhatsApp após a Live.</p>
 
-            <div id="container-sacolas">
-                <!-- AS SACOLAS APARECERÃO AQUI GERADAS PELO JS -->
+            <div id="container-sacolas"></div>
+        </div>
+
+        <!-- NOVA ABA: CONTROLE E LOGÍSTICA -->
+        <div id="logistica" class="section">
+            <h2>Controle de Pagamentos e Envios</h2>
+            <p style="color: #64748b; margin-bottom: 2rem;">Gerencie o status financeiro e a entrega das sacolas finalizadas.</p>
+
+            <div class="card">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sacola / Cliente</th>
+                                <th>Total Devido</th>
+                                <th>Status Pagamento</th>
+                                <th>Forma de Pgto</th>
+                                <th>Status Entrega</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-logistica"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <!-- ABA NUVEM (SINCRONIZAÇÃO COMPACTADA) -->
+        <!-- ABA NUVEM -->
         <div id="nuvem" class="section">
             <h2>Nuvem MF - Sincronização Super Leve</h2>
-            <p style="color: #64748b; margin-bottom: 2rem;">O código gerado agora é <b>extremamente compactado</b>. Copie e envie no WhatsApp para sincronizar outro dispositivo instantaneamente.</p>
+            <p style="color: #64748b; margin-bottom: 2rem;">O código gerado agora é <b>extremamente compactado</b> e leva também os status de pagamento.</p>
 
             <div class="grid-2">
                 <div class="card" style="border-top: 4px solid var(--accent);">
                     <h3>1. Exportar Dados (Gerar)</h3>
-                    <p class="small-txt" style="margin-bottom: 1rem;">Transforma suas peças e vendas num código super pequeno.</p>
                     <button class="btn-primary" onclick="gerarCodigoSync()"><i class="fa-solid fa-file-zipper"></i> Gerar Código Compacto</button>
                     <textarea id="sync-code-output" rows="3" readonly placeholder="O código aparecerá aqui..." style="font-family: monospace; font-size: 0.8rem; background: #f1f5f9; cursor: text; margin-top: 1rem; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);"></textarea>
                 </div>
 
                 <div class="card" style="border-top: 4px solid var(--success);">
                     <h3>2. Importar Dados (Colar)</h3>
-                    <p class="small-txt" style="margin-bottom: 1rem;">Cole o código recebido do outro aparelho. <b>Isso substituirá seus dados!</b></p>
                     <textarea id="sync-code-input" rows="3" placeholder="Cole o código aqui..." style="font-family: monospace; font-size: 0.8rem; margin-bottom: 1rem; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);"></textarea>
                     <button class="btn-success" onclick="importarCodigoSync()"><i class="fa-solid fa-cloud-arrow-down"></i> Sincronizar Agora</button>
                 </div>
@@ -298,13 +338,47 @@
 
     </div>
 
+    <!-- ÁREA DE IMPRESSÃO (FICA ESCONDIDA ATÉ CLICAR EM IMPRIMIR) -->
+    <div id="print-area">
+        <div class="pdf-header">
+            <h1>MANIA FOREVER <span>LIVE SHOP</span></h1>
+            <p id="pdf-data-hora">Catálogo de Peças - Gerado em: --</p>
+        </div>
+        <table class="pdf-table">
+            <thead>
+                <tr>
+                    <th>Cód</th>
+                    <th>Peça</th>
+                    <th>Detalhes</th>
+                    <th>Preço</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="pdf-tbody">
+            </tbody>
+        </table>
+    </div>
+
 <script>
-    // BANCO DE DADOS LOCAL
-    let dbLive = JSON.parse(localStorage.getItem('mania_forever_live')) || { pecas: [], vendas: [] };
+    // BANCO DE DADOS LOCAL - AGORA INCLUI STATUS LOGÍSTICO
+    let dbLive = JSON.parse(localStorage.getItem('mania_forever_live_v2')) || { 
+        pecas: [], 
+        vendas: [], 
+        status: {} // Guardará o status por nome: { pago: false, forma: "", entrega: "Aguardando" }
+    };
+    
+    // Migração de banco antigo se existir
+    if(!localStorage.getItem('mania_forever_live_v2') && localStorage.getItem('mania_forever_live')) {
+        let oldDb = JSON.parse(localStorage.getItem('mania_forever_live'));
+        dbLive.pecas = oldDb.pecas || [];
+        dbLive.vendas = oldDb.vendas || [];
+        salvarBanco();
+    }
+
     let pecaSelecionadaParaVenda = null;
 
     function salvarBanco() {
-        localStorage.setItem('mania_forever_live', JSON.stringify(dbLive));
+        localStorage.setItem('mania_forever_live_v2', JSON.stringify(dbLive));
     }
 
     // NAVEGAÇÃO
@@ -329,7 +403,7 @@
     }
 
     // ==========================================
-    // MÓDULO: PEÇAS (CADASTRO, ORDENAÇÃO E LISTA)
+    // MÓDULO: PEÇAS E IMPRESSÃO (PDF DECORADO)
     // ==========================================
     
     function atualizarCodigoGerado() {
@@ -362,38 +436,39 @@
         }
     }
 
-    function abrirModalLista() {
-        let texto = "✨ *CATÁLOGO DA LIVE - MANIA FOREVER* ✨\n\n";
+    function imprimirPDFPecas() {
+        const tbody = document.getElementById('pdf-tbody');
+        tbody.innerHTML = "";
         
-        // Organiza as peças por preço crescente
         const pecasOrdenadas = [...dbLive.pecas].sort((a,b) => a.preco - b.preco);
         
-        if (pecasOrdenadas.length === 0) {
-            texto += "Nenhuma peça cadastrada ainda.";
-        } else {
-            pecasOrdenadas.forEach(p => {
-                let status = p.vendida ? "❌ VENDIDA" : "✅ DISPONÍVEL";
-                texto += `CÓDIGO: *${p.codigo}*\n👗 ${p.nome} - ${p.cor}\n💰 R$ ${p.preco.toFixed(2).replace('.', ',')}  ${status}\n\n`;
-            });
-        }
+        pecasOrdenadas.forEach(p => {
+            let rowClass = p.vendida ? 'pdf-row-vendida' : '';
+            let status = p.vendida ? '<span class="pdf-badge-vendida">❌ VENDIDA</span>' : '<span class="pdf-badge-livre">✅ DISPONÍVEL</span>';
+            
+            tbody.innerHTML += `
+                <tr class="${rowClass}">
+                    <td style="font-weight:bold;">${p.codigo}</td>
+                    <td style="font-weight:bold;">${p.nome}</td>
+                    <td>${p.cor}</td>
+                    <td style="font-weight:bold;">${formatarMoeda(p.preco)}</td>
+                    <td>${status}</td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('pdf-data-hora').innerText = "Catálogo gerado em: " + new Date().toLocaleString('pt-BR');
         
-        document.getElementById('texto-lista-pecas').value = texto;
-        document.getElementById('modal-lista').classList.add('active');
-    }
-
-    function fecharModalLista() {
-        document.getElementById('modal-lista').classList.remove('active');
-    }
-
-    function copiarListaPecas() {
-        const textarea = document.getElementById('texto-lista-pecas');
-        textarea.select();
-        navigator.clipboard.writeText(textarea.value);
-        alert("Lista copiada com sucesso!");
+        document.body.classList.add('printing-lista');
+        window.print();
+        
+        setTimeout(() => {
+            document.body.classList.remove('printing-lista');
+        }, 500);
     }
 
     // ==========================================
-    // MÓDULO: LANÇAMENTO (BUSCA INTELIGENTE)
+    // MÓDULO: LANÇAMENTO 
     // ==========================================
 
     function buscarPecaPorCodigo() {
@@ -410,22 +485,19 @@
 
         let codigoPesquisa = inputStr;
 
-        // SE O USUÁRIO DIGITOU APENAS UM NÚMERO (Ex: 5, 05, 12) -> Transforma em MF-005
         if (/^\d+$/.test(inputStr)) {
             const numero = parseInt(inputStr, 10);
             codigoPesquisa = "MF-" + String(numero).padStart(3, '0');
         }
 
-        // Busca a peça pelo código (e garante que ela ainda NÃO foi vendida)
         const pecaEncontrada = dbLive.pecas.find(p => p.codigo === codigoPesquisa && !p.vendida);
 
         if (pecaEncontrada) {
             pecaSelecionadaParaVenda = pecaEncontrada;
-            
             document.getElementById('preview-codigo-real').innerText = pecaEncontrada.codigo;
             document.getElementById('preview-nome').innerText = pecaEncontrada.nome;
             document.getElementById('preview-cor').innerText = pecaEncontrada.cor;
-            document.getElementById('preview-preco').innerText = `R$ ${pecaEncontrada.preco.toFixed(2).replace('.', ',')}`;
+            document.getElementById('preview-preco').innerText = formatarMoeda(pecaEncontrada.preco);
             
             previewDiv.style.display = 'block';
             btnConfirmar.disabled = false;
@@ -440,11 +512,13 @@
         if(!pecaSelecionadaParaVenda) return;
 
         const clienteNome = document.getElementById('venda-cliente-nome').value.trim();
+        const clienteUser = document.getElementById('venda-cliente-user').value.trim();
         const clienteFone = document.getElementById('venda-cliente-fone').value.trim();
 
         dbLive.vendas.push({
             id: Date.now(),
-            cliente: clienteNome,
+            clienteNome: clienteNome,
+            clienteUser: clienteUser,
             fone: clienteFone,
             codigoPeca: pecaSelecionadaParaVenda.codigo,
             nomePeca: pecaSelecionadaParaVenda.nome,
@@ -453,7 +527,12 @@
             dataHora: new Date().toLocaleString('pt-BR')
         });
 
-        // Marca a peça como vendida para ela não aparecer mais na busca
+        // Inicializa o status financeiro do cliente se não existir
+        const chaveCli = clienteNome.toUpperCase();
+        if(!dbLive.status[chaveCli]) {
+            dbLive.status[chaveCli] = { pago: false, forma: "", entrega: "Aguardando Separação" };
+        }
+
         const p = dbLive.pecas.find(x => x.codigo === pecaSelecionadaParaVenda.codigo);
         if(p) p.vendida = true;
 
@@ -470,13 +549,11 @@
 
     function deletarVenda(idVenda) {
         if(confirm("Cancelar este arremate? A peça voltará para o estoque.")) {
-            // Volta a peça pro estoque antes de apagar a venda
             const venda = dbLive.vendas.find(v => v.id === idVenda);
             if(venda) {
                 const peca = dbLive.pecas.find(p => p.codigo === venda.codigoPeca);
                 if(peca) peca.vendida = false;
             }
-
             dbLive.vendas = dbLive.vendas.filter(v => v.id !== idVenda);
             salvarBanco();
             atualizarTelas();
@@ -484,33 +561,19 @@
     }
 
     // ==========================================
-    // MÓDULO: NUVEM (EMPACOTAMENTO EXTREMO)
+    // MÓDULO: NUVEM (EMPACOTAMENTO)
     // ==========================================
     
-    // Função para transformar os objetos gigantescos em Arrays curtinhas
-    function compactarBanco(dbNormal) {
-        return {
-            p: dbNormal.pecas.map(p => [p.codigo, p.nome, p.cor, p.preco, p.vendida ? 1 : 0]),
-            v: dbNormal.vendas.map(v => [v.id, v.cliente, v.fone, v.codigoPeca, v.nomePeca, v.corPeca, v.precoFinal])
-        };
-    }
-
-    function descompactarBanco(dbPack) {
-        let novoDb = { pecas: [], vendas: [] };
-        if(dbPack.p) {
-            novoDb.pecas = dbPack.p.map(arr => ({codigo: arr[0], nome: arr[1], cor: arr[2], preco: arr[3], vendida: arr[4] === 1}));
-        }
-        if(dbPack.v) {
-            novoDb.vendas = dbPack.v.map(arr => ({id: arr[0], cliente: arr[1], fone: arr[2], codigoPeca: arr[3], nomePeca: arr[4], corPeca: arr[5], precoFinal: arr[6], dataHora: new Date().toLocaleString('pt-BR')}));
-        }
-        return novoDb;
-    }
-
     function gerarCodigoSync() {
         try {
-            // Empacota -> Transforma em Texto -> Comprime com LZString
-            const bancoEmpacotado = compactarBanco(dbLive);
-            const dadosStr = JSON.stringify(bancoEmpacotado);
+            // Empacota Peças e Vendas em arrays pra economizar MUITO espaço
+            const pacote = {
+                p: dbLive.pecas.map(p => [p.codigo, p.nome, p.cor, p.preco, p.vendida ? 1 : 0]),
+                v: dbLive.vendas.map(v => [v.id, v.clienteNome, v.clienteUser || "", v.fone, v.codigoPeca, v.nomePeca, v.corPeca, v.precoFinal]),
+                s: dbLive.status // Mantém objeto pois é pequeno
+            };
+            
+            const dadosStr = JSON.stringify(pacote);
             const codigoComprimido = LZString.compressToBase64(dadosStr);
             
             const textarea = document.getElementById('sync-code-output');
@@ -532,22 +595,44 @@
                 const dadosStr = LZString.decompressFromBase64(codigoB64);
                 if (!dadosStr || dadosStr === "") throw new Error("Código vazio.");
 
-                const dadosEmpacotados = JSON.parse(dadosStr);
-                const novoDb = descompactarBanco(dadosEmpacotados);
+                const pacote = JSON.parse(dadosStr);
                 
-                if(novoDb.pecas && novoDb.vendas) {
+                let novoDb = { pecas: [], vendas: [], status: pacote.s || {} };
+                if(pacote.p) {
+                    novoDb.pecas = pacote.p.map(arr => ({codigo: arr[0], nome: arr[1], cor: arr[2], preco: arr[3], vendida: arr[4] === 1}));
+                }
+                if(pacote.v) {
+                    novoDb.vendas = pacote.v.map(arr => ({id: arr[0], clienteNome: arr[1], clienteUser: arr[2], fone: arr[3], codigoPeca: arr[4], nomePeca: arr[5], corPeca: arr[6], precoFinal: arr[7], dataHora: new Date().toLocaleString('pt-BR')}));
+                }
+                
+                if(novoDb.pecas) {
                     dbLive = novoDb;
                     salvarBanco();
                     document.getElementById('sync-code-input').value = '';
                     alert("Dados importados com sucesso!");
                     showSection('dashboard');
-                } else {
-                    throw new Error("Formato inválido");
                 }
             } catch(e) {
-                alert("Código inválido. Verifique se copiou tudo!");
+                alert("Código inválido. Verifique se copiou tudo e tentou o código novo.");
             }
         }
+    }
+
+    // ==========================================
+    // MÓDULO: LOGÍSTICA E STATUS
+    // ==========================================
+
+    function atualizarStatusLogistica(clienteChave, campo, valor) {
+        if(!dbLive.status[clienteChave]) {
+            dbLive.status[clienteChave] = { pago: false, forma: "", entrega: "Aguardando Separação" };
+        }
+        
+        if (campo === 'pago') dbLive.status[clienteChave].pago = (valor === 'true');
+        else if (campo === 'forma') dbLive.status[clienteChave].forma = valor;
+        else if (campo === 'entrega') dbLive.status[clienteChave].entrega = valor;
+        
+        salvarBanco();
+        atualizarTelas(); // Atualiza cores
     }
 
     // ==========================================
@@ -561,7 +646,7 @@
     function atualizarTelas() {
         atualizarCodigoGerado();
 
-        // 1. ABA PEÇAS (Organizadas por Preço Crescente)
+        // 1. ABA PEÇAS
         const tbodyPecas = document.getElementById('lista-pecas');
         tbodyPecas.innerHTML = "";
         
@@ -590,9 +675,10 @@
         
         dbLive.vendas.slice().reverse().forEach(v => {
             totalFaturado += v.precoFinal;
+            let displayCliente = v.clienteUser ? `${v.clienteNome} <span style="font-size:0.8rem; color:#94a3b8;">(${v.clienteUser})</span>` : v.clienteNome;
             tbodyDashboard.innerHTML += `
                 <tr>
-                    <td style="font-weight: 700;"><i class="fa-solid fa-user-tag" style="color:#94a3b8; margin-right:5px;"></i> ${v.cliente}</td>
+                    <td style="font-weight: 700;">${displayCliente}</td>
                     <td><span style="color:var(--accent); font-weight:800; font-size:0.8rem;">${v.codigoPeca}</span><br>${v.nomePeca}</td>
                     <td>${v.corPeca}</td>
                     <td style="text-align: right; font-weight:bold; color:var(--success);">${formatarMoeda(v.precoFinal)}</td>
@@ -604,14 +690,25 @@
         document.getElementById('dash-qtd-pecas').innerText = dbLive.vendas.length;
         if(dbLive.vendas.length === 0) tbodyDashboard.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Nenhum arremate ainda.</td></tr>";
 
-        // 3. ABA SACOLAS (VENDAS POR PESSOA E ZAP HUMANIZADO)
+        // 3. ABA SACOLAS E ABA LOGÍSTICA
         const containerSacolas = document.getElementById('container-sacolas');
+        const tbodyLogistica = document.getElementById('lista-logistica');
         containerSacolas.innerHTML = "";
+        tbodyLogistica.innerHTML = "";
 
         const sacolas = {};
         dbLive.vendas.forEach(v => {
-            const chave = v.cliente.trim().toUpperCase();
-            if(!sacolas[chave]) sacolas[chave] = { nome: v.cliente, fone: v.fone, pecas: [], total: 0 };
+            const nomeStr = v.clienteNome || v.cliente || "Sem Nome"; // Falback v.cliente para bd antigo
+            const chave = nomeStr.trim().toUpperCase();
+            if(!sacolas[chave]) {
+                sacolas[chave] = { 
+                    nome: nomeStr, 
+                    user: v.clienteUser || "", 
+                    fone: v.fone, 
+                    pecas: [], 
+                    total: 0 
+                };
+            }
             sacolas[chave].pecas.push(v);
             sacolas[chave].total += v.precoFinal;
         });
@@ -619,18 +716,20 @@
         const chaves = Object.keys(sacolas);
         if(chaves.length === 0) {
             containerSacolas.innerHTML = "<div class='card' style='text-align:center; color:#94a3b8;'>Nenhuma sacola aberta ainda.</div>";
+            tbodyLogistica.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Nenhuma venda registrada.</td></tr>";
         } else {
             chaves.forEach(chave => {
                 const sacola = sacolas[chave];
                 
-                // MENSAGEM DO WHATSAPP HUMANIZADA
+                // MENSAGEM DO WHATSAPP DECORADA E HUMANIZADA COM PRAZO
                 let textoZap = `Oiii *${sacola.nome}*! Tudo bem? 💖✨\n\nPassando pra te mandar o resumo maravilhoso das peças que você garantiu na nossa Live! 🥰🛍️\n\n`;
                 sacola.pecas.forEach(p => {
                     textoZap += `👗 *${p.codigoPeca}* | ${p.nomePeca} (${p.corPeca})\n👉 *${formatarMoeda(p.precoFinal)}*\n\n`;
                 });
                 textoZap += `💰 *TOTAL DA SUA SACOLA: ${formatarMoeda(sacola.total)}*\n\n`;
+                textoZap += `⚠️ Você tem até *24 horas* para realizar o pagamento e garantir suas peças, tá bom? ⏳🏃‍♀️\n\n`;
                 textoZap += `Me conta, amor: Qual vai ser a *forma de pagamento*? E como prefere fazer a *retirada/envio*? 📦🚗\n\n`;
-                textoZap += `⚠️ _Lembrando que pagamentos via link/maquininha possuem acréscimo das taxas, tá bom?_ 😉😘`;
+                textoZap += `_(Lembrando que pagamentos via maquininha e plataformas possuem acréscimo das taxas)_ 😉😘`;
                 
                 const linkZap = sacola.fone ? `https://wa.me/55${sacola.fone.replace(/\D/g,'')}?text=${encodeURIComponent(textoZap)}` : '#';
                 const styleBtnZap = sacola.fone ? '' : 'opacity: 0.5; pointer-events: none;';
@@ -657,9 +756,7 @@
                             </div>
                             <h3 style="margin:0; color:var(--success);">${formatarMoeda(sacola.total)}</h3>
                         </div>
-                        <div style="margin-bottom: 1rem;">
-                            ${htmlPecas}
-                        </div>
+                        <div style="margin-bottom: 1rem;">${htmlPecas}</div>
                         <div style="text-align: right;">
                             <a href="${linkZap}" target="_blank" class="btn-whatsapp" style="${styleBtnZap}">
                                 <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Enviar Resumo Fofo
@@ -667,13 +764,47 @@
                         </div>
                     </div>
                 `;
+
+                // PREENCHIMENTO DA ABA LOGÍSTICA
+                let status = dbLive.status[chave] || { pago: false, forma: "", entrega: "Aguardando" };
+                
+                let selectPgtoClass = status.pago ? 'status-pago' : 'status-pendente';
+                let selectEntregaClass = status.entrega.includes("Entregue") || status.entrega.includes("Enviado") ? 'status-pago' : (status.entrega.includes("Pronto") ? 'status-neutro' : 'status-pendente');
+
+                tbodyLogistica.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 700;">${sacola.nome} <br><span style="font-size:0.75rem; color:#64748b; font-weight:normal;">${sacola.pecas.length} peças</span></td>
+                        <td style="font-weight: bold;">${formatarMoeda(sacola.total)}</td>
+                        <td>
+                            <select class="status-select ${selectPgtoClass}" onchange="atualizarStatusLogistica('${chave}', 'pago', this.value)">
+                                <option value="false" ${!status.pago ? 'selected' : ''}>❌ Pendente</option>
+                                <option value="true" ${status.pago ? 'selected' : ''}>✅ Pago</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="status-select status-neutro" onchange="atualizarStatusLogistica('${chave}', 'forma', this.value)">
+                                <option value="" ${status.forma === '' ? 'selected' : ''}>-- Informar --</option>
+                                <option value="PIX" ${status.forma === 'PIX' ? 'selected' : ''}>PIX</option>
+                                <option value="Cartão" ${status.forma === 'Cartão' ? 'selected' : ''}>Cartão (Link/Maq)</option>
+                                <option value="Dinheiro" ${status.forma === 'Dinheiro' ? 'selected' : ''}>Dinheiro</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="status-select ${selectEntregaClass}" onchange="atualizarStatusLogistica('${chave}', 'entrega', this.value)">
+                                <option value="Aguardando" ${status.entrega === 'Aguardando' ? 'selected' : ''}>⏳ Aguardando</option>
+                                <option value="Pronto para Retirada" ${status.entrega === 'Pronto para Retirada' ? 'selected' : ''}>🛍️ Pronto p/ Retirada</option>
+                                <option value="Enviado/Entregue" ${status.entrega === 'Enviado/Entregue' ? 'selected' : ''}>🚚 Enviado/Entregue</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
             });
         }
     }
 
     function limparLive() {
-        if(confirm("CUIDADO: Isso vai apagar TODAS as vendas e TODAS as peças atuais para iniciar uma Live limpa. Tem certeza absoluta?")) {
-            dbLive = { pecas: [], vendas: [] };
+        if(confirm("CUIDADO: Isso vai apagar TODAS as vendas, TODOS os status e TODAS as peças para iniciar uma Live limpa. Tem certeza?")) {
+            dbLive = { pecas: [], vendas: [], status: {} };
             salvarBanco();
             atualizarTelas();
             alert("Sistema limpo! Tudo pronto para uma nova Live Shop.");
