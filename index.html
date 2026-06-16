@@ -51,12 +51,12 @@
         h2 { font-size: 2rem; font-weight: 800; margin-bottom: 2.5rem; color: #0f172a; }
         h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.25rem; color: #1e293b; }
 
-        .card { background: var(--card-bg); padding: 1.75rem; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 2rem; width: 100%; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+        .card { background: var(--card-bg); padding: 1.75rem; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 2rem; width: 100%; box-shadow: var(--shadow); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; width: 100%; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; width: 100%; }
 
-        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
-        .input-group { margin-bottom: 1.25rem; display: flex; flex-direction: column; }
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; width: 100%; }
+        .input-group { margin-bottom: 1.25rem; display: flex; flex-direction: column; width: 100%; }
         label { font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #475569; text-transform: uppercase; }
         input, select { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 0.95rem; outline: none; transition: 0.2s; background: #fff; color: #0f172a; }
         input[type="checkbox"] { width: auto; transform: scale(1.3); cursor: pointer; accent-color: var(--accent); }
@@ -64,8 +64,8 @@
         input[readonly] { background: #f1f5f9; cursor: not-allowed; font-weight: bold; color: var(--accent); }
 
         .btn-primary { background: var(--primary); color: #fff; padding: 14px 28px; border-radius: var(--radius-md); border: none; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.2s; width: 100%; text-align: center; }
-        .btn-primary:hover { background: var(--accent); }
-        .btn-success { background: var(--success); color: #fff; padding: 14px 28px; border-radius: var(--radius-md); border: none; cursor: pointer; font-weight: 800; font-size: 1rem; width: 100%; }
+        .btn-primary:hover { background: var(--accent); color: #fff; }
+        .btn-success { background: var(--success); color: #fff; padding: 14px 28px; border-radius: var(--radius-md); border: none; cursor: pointer; font-weight: 800; font-size: 1rem; transition: all 0.2s; width: 100%; }
         .btn-success:hover { filter: brightness(1.1); }
         .btn-outline { background: transparent; border: 2px solid var(--accent); color: var(--accent); padding: 10px 20px; border-radius: var(--radius-md); cursor: pointer; font-weight: 700; transition: 0.2s;}
         .btn-outline:hover { background: var(--accent); color: #fff; }
@@ -84,6 +84,8 @@
         .btn-action { background: transparent; border: none; cursor: pointer; font-size: 1.2rem; padding: 4px 8px; border-radius: 4px; transition: 0.2s; }
         .btn-delete { color: #94a3b8; }
         .btn-delete:hover { color: var(--danger); background: #fee2e2; }
+        .btn-print { color: #64748b; }
+        .btn-print:hover { color: #000; background: #e2e8f0; }
 
         .resumo-cliente { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1rem; background: #fff; }
         .resumo-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-light); padding-bottom: 1rem; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px;}
@@ -101,10 +103,9 @@
         select.status-pago { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
         select.status-neutro { background: #f1f5f9; color: #475569; border: 1px solid var(--border); }
 
-        /* AREAS DE IMPRESSÃO (ESCONDIDAS NA TELA NORMAL) */
+        /* AREAS DE IMPRESSÃO */
         #print-area-catalogo, #print-area-relatorio, #print-area-etiquetas { display: none; }
         
-        /* REGRAS MÁGICAS DE IMPRESSÃO - CORES FORÇADAS E ESTILOS */
         @media print {
             * { 
                 -webkit-print-color-adjust: exact !important; 
@@ -123,7 +124,7 @@
             body.printing-relatorio #print-area-relatorio, body.printing-relatorio #print-area-relatorio * { visibility: visible; }
             body.printing-relatorio #print-area-relatorio { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; }
             
-            /* --- ETIQUETAS ARGOX (40x25mm) EM MASSA --- */
+            /* --- ETIQUETAS ARGOX (40x25mm) --- */
             @page { margin: 0; }
             body.printing-etiquetas { background: #fff; margin: 0; padding: 0; }
             body.printing-etiquetas #print-area-etiquetas, body.printing-etiquetas #print-area-etiquetas * { visibility: visible; }
@@ -141,7 +142,7 @@
             .etiq-desc { font-size: 6pt; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
             .etiq-preco { font-size: 9pt; font-weight: 900; margin-top: 2px; }
 
-            /* ESTILOS DECORADOS COMUNS PARA PDF A4 */
+            /* ESTILOS DECORADOS A4 */
             .pdf-header { text-align: center; border-bottom: 4px solid #ec4899; padding-bottom: 15px; margin-bottom: 25px; }
             .pdf-header h1 { font-size: 28px; color: #000; text-transform: uppercase; margin: 0; letter-spacing: 1px;}
             .pdf-header h1 span { color: #ec4899; }
@@ -183,7 +184,7 @@
         <div class="nav-item" onclick="showSection('lancamento')"><i class="fa-solid fa-cart-arrow-down"></i> Lançamento Rápido</div>
         <div class="nav-item" onclick="showSection('por-pessoa')"><i class="fa-solid fa-users"></i> Fechamento Sacolas</div>
         <div class="nav-item" onclick="showSection('logistica')"><i class="fa-solid fa-truck-fast"></i> Controle / Logística</div>
-        <div class="nav-item" onclick="showSection('nuvem')" style="border-top: 1px solid #333; margin-top: 1rem; padding-top: 1rem;"><i class="fa-solid fa-cloud"></i> Nuvem (Online)</div>
+        <div class="nav-item" onclick="showSection('nuvem')" style="border-top: 1px solid #333; margin-top: 1rem; padding-top: 1rem;"><i class="fa-solid fa-cloud-arrow-up"></i> Nuvem / Backup</div>
         <div class="nav-item" onclick="limparLive()" style="margin-top: auto; color: var(--danger);"><i class="fa-solid fa-trash-can"></i> Encerrar/Limpar Live</div>
     </div>
 
@@ -222,7 +223,7 @@
         <div id="pecas" class="section">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 2.5rem; gap: 15px;">
                 <h2 style="margin: 0;">Estoque / Peças da Live</h2>
-                <button class="btn-outline" style="width: auto;" onclick="imprimirPDFPecas()"><i class="fa-solid fa-print"></i> Imprimir Catálogo (PDF)</button>
+                <button class="btn-outline" style="width: auto;" onclick="imprimirPDFPecas()"><i class="fa-solid fa-print"></i> Imprimir Catálogo Colorido (PDF)</button>
             </div>
             
             <div class="card">
@@ -241,7 +242,6 @@
                 </form>
             </div>
 
-            <!-- IMPRESSÃO EM MASSA DAS ETIQUETAS -->
             <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
                 <button class="btn-outline" style="width: auto; background: var(--primary); color: white; border: none;" onclick="imprimirEtiquetasEmMassa()"><i class="fa-solid fa-tags"></i> Imprimir Etiquetas Selecionadas (Argox)</button>
             </div>
@@ -323,34 +323,47 @@
             </div>
         </div>
 
-        <!-- ABA NUVEM ONLINE -->
+        <!-- ABA NUVEM GERAL COM 3 OPÇÕES -->
         <div id="nuvem" class="section">
-            <h2>Nuvem MF - Sincronização Online</h2>
-            <p style="color: #64748b; margin-bottom: 1rem;">O sistema sobe seus dados para a nuvem real e te dá um <b>código numérico</b> para puxar as informações no celular.</p>
+            <h2>Nuvem MF - Sincronização</h2>
+            <p style="color: #64748b; margin-bottom: 2rem;">Escolha o método de sincronização que preferir para puxar os dados pelo celular de forma rápida e segura.</p>
 
-            <div class="grid-2">
-                <div class="card" style="border-top: 4px solid var(--accent);">
-                    <h3>1. Enviar para a Nuvem</h3>
-                    <button class="btn-primary" id="btn-gerar-nuvem" onclick="salvarNaNuvem()"><i class="fa-solid fa-cloud-arrow-up"></i> Conectar e Salvar</button>
-                    <div id="loading-nuvem" style="display:none; text-align:center; margin-top:10px;"><i class="fa-solid fa-spinner fa-spin"></i> Conectando...</div>
-                    <div style="margin-top: 15px; text-align: center;">
-                        <span style="font-size: 0.85rem; color: #64748b; display: block; margin-bottom: 5px;">Seu Código Gerado:</span>
-                        <input type="text" id="nuvem-codigo-gerado" readonly style="font-size: 1.2rem; font-weight: 900; text-align: center; color: var(--accent); cursor: copy;" onclick="this.select(); document.execCommand('copy'); alert('Copiado!');" placeholder="---">
-                    </div>
+            <h3 style="margin-bottom: 1rem; color: var(--primary);"><i class="fa-brands fa-google-drive"></i> Opção 1: Google Drive (Recomendado)</h3>
+            <div class="card" style="border: 2px solid var(--accent-light); padding: 1.5rem; margin-bottom: 1rem;">
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>Link do Google Script (URL):</label>
+                    <input type="text" id="url-google-script" placeholder="https://script.google.com/macros/s/..." onchange="salvarLinkDrive()">
                 </div>
-
-                <div class="card" style="border-top: 4px solid var(--success);">
-                    <h3>2. Baixar da Nuvem</h3>
-                    <input type="text" id="nuvem-codigo-importar" placeholder="Digite o código numérico aqui..." style="font-size: 1.1rem; text-align: center; margin-bottom: 1rem; font-weight: bold;">
-                    <button class="btn-success" id="btn-baixar-nuvem" onclick="baixarDaNuvem()"><i class="fa-solid fa-cloud-arrow-down"></i> Sincronizar Agora</button>
-                    <div id="loading-baixar" style="display:none; text-align:center; margin-top:10px; color: var(--success);"><i class="fa-solid fa-spinner fa-spin"></i> Baixando...</div>
+            </div>
+            <div class="grid-2" style="margin-bottom: 2rem;">
+                <div class="card" style="border-top: 4px solid var(--accent); margin-bottom: 0;">
+                    <button class="btn-primary" id="btn-gerar-drive" onclick="salvarNoDrive()"><i class="fa-solid fa-cloud-arrow-up"></i> Salvar no Drive</button>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--success); margin-bottom: 0;">
+                    <button class="btn-success" id="btn-baixar-drive" onclick="baixarDoDrive()"><i class="fa-solid fa-cloud-arrow-down"></i> Puxar do Drive</button>
                 </div>
             </div>
 
-            <!-- PLANO B -->
-            <div style="margin-top: 2rem;">
+            <hr style="border: none; border-top: 1px solid var(--border); margin: 2rem 0;">
+
+            <h3 style="margin-bottom: 1rem; color: var(--primary);"><i class="fa-solid fa-cloud"></i> Opção 2: Nuvem Rápida (Código Numérico)</h3>
+            <div class="grid-2">
+                <div class="card" style="border-top: 4px solid var(--accent);">
+                    <button class="btn-primary" id="btn-gerar-nuvem" onclick="salvarNaNuvem()"><i class="fa-solid fa-cloud-arrow-up"></i> Gerar Código Numérico</button>
+                    <div style="margin-top: 15px; text-align: center;">
+                        <input type="text" id="nuvem-codigo-gerado" readonly style="font-size: 1.2rem; font-weight: 900; text-align: center; color: var(--accent); cursor: copy;" onclick="this.select(); document.execCommand('copy'); alert('Copiado!');" placeholder="---">
+                    </div>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--success);">
+                    <input type="text" id="nuvem-codigo-importar" placeholder="Cole o código gerado..." style="font-size: 1.1rem; text-align: center; margin-bottom: 1rem; font-weight: bold;">
+                    <button class="btn-success" id="btn-baixar-nuvem" onclick="baixarDaNuvem()"><i class="fa-solid fa-cloud-arrow-down"></i> Sincronizar Agora</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 1rem;">
                 <details style="background: #f1f5f9; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer;">
-                    <summary style="font-weight: bold; color: #475569;">Modo Offline (Se a Nuvem falhar)</summary>
+                    <summary style="font-weight: bold; color: #475569;">Opção 3: Modo Offline (Copiar Texto Compacto)</summary>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-top: 10px;">Se a operadora bloquear a internet, gere o código abaixo e envie no WhatsApp.</p>
                     <textarea id="sync-code-offline" rows="3" readonly style="width:100%; margin-top:10px; padding:10px; font-family:monospace; font-size:0.8rem;"></textarea>
                     <button class="btn-outline" style="margin-top:10px; width: 100%;" onclick="gerarOffline()"><i class="fa-solid fa-file-zipper"></i> Gerar Texto Offline</button>
                 </details>
@@ -358,9 +371,7 @@
         </div>
     </div>
 
-    <!-- ÁREAS DE IMPRESSÃO -->
-    
-    <!-- 1. CATÁLOGO A4 LINDINHO -->
+    <!-- ÁREAS DE IMPRESSÃO (ESCONDIDAS) -->
     <div id="print-area-catalogo">
         <div class="pdf-header">
             <h1>MANIA FOREVER <span>LIVE SHOP</span></h1>
@@ -372,7 +383,6 @@
         </table>
     </div>
 
-    <!-- 2. RELATÓRIO A4 LINDINHO -->
     <div id="print-area-relatorio">
         <div class="pdf-header">
             <h1>MANIA FOREVER <span>FECHAMENTO DA LIVE</span></h1>
@@ -388,7 +398,6 @@
         </table>
     </div>
 
-    <!-- 3. ETIQUETAS EM MASSA ARGOX -->
     <div id="print-area-etiquetas">
         <!-- As etiquetas entram aqui dinamicamente -->
     </div>
@@ -443,7 +452,7 @@
         }
     }
 
-    // --- SELEÇÃO DE CHECKBOX PARA ETIQUETAS ---
+    // IMPRESSÃO DE ETIQUETAS
     function toggleCheckAll() {
         const master = document.getElementById('check-all').checked;
         const boxes = document.querySelectorAll('.check-peca');
@@ -452,14 +461,10 @@
 
     function imprimirEtiquetasEmMassa() {
         const selecionados = document.querySelectorAll('.check-peca:checked');
-        if(selecionados.length === 0) {
-            alert("Selecione pelo menos uma peça (marcando as caixinhas na tabela) para imprimir a etiqueta!");
-            return;
-        }
+        if(selecionados.length === 0) return alert("Selecione pelo menos uma peça!");
 
         const area = document.getElementById('print-area-etiquetas');
         area.innerHTML = "";
-
         selecionados.forEach(cb => {
             const p = dbLive.pecas.find(x => x.codigo === cb.value);
             if(p) {
@@ -469,23 +474,19 @@
                         <div class="etiq-cod">${p.codigo}</div>
                         <div class="etiq-desc">${p.nome.replace(/'/g,"\\'").substring(0,25)}</div>
                         <div class="etiq-preco">${formatarMoeda(p.preco)}</div>
-                    </div>
-                `;
+                    </div>`;
             }
         });
 
-        document.body.classList.add('printing-etiquetas'); 
-        window.print();
-        
+        document.body.classList.add('printing-etiquetas'); window.print();
         setTimeout(() => { 
             document.body.classList.remove('printing-etiquetas'); 
-            // Desmarca os que já imprimiu para facilitar
             selecionados.forEach(cb => cb.checked = false);
             document.getElementById('check-all').checked = false;
         }, 500);
     }
 
-    // --- IMPRESSÕES PDFs A4 COLORIDOS ---
+    // IMPRESSÃO DOS PDFs
     function imprimirPDFPecas() {
         const tb = document.getElementById('pdf-tbody-catalogo'); tb.innerHTML = "";
         [...dbLive.pecas].sort((a,b) => a.preco - b.preco).forEach(p => {
@@ -510,16 +511,14 @@
         setTimeout(() => { document.body.classList.remove('printing-relatorio'); }, 500);
     }
 
-    // --- LANÇAMENTO ---
+    // LANÇAMENTO
     let pecaSelecionadaParaVenda = null;
     function buscarPecaPorCodigo() {
         let ipt = document.getElementById('venda-codigo-busca').value.toUpperCase().trim();
         const prev = document.getElementById('preview-peca'); const btn = document.getElementById('btn-confirmar-venda');
         if(!ipt) { prev.style.display = 'none'; btn.disabled = true; return; }
-        
         let cBusca = /^\d+$/.test(ipt) ? "MF-" + String(parseInt(ipt, 10)).padStart(3, '0') : ipt;
         const p = dbLive.pecas.find(x => x.codigo === cBusca && !x.vendida);
-        
         if (p) {
             pecaSelecionadaParaVenda = p;
             document.getElementById('preview-codigo-real').innerText = p.codigo;
@@ -527,9 +526,7 @@
             document.getElementById('preview-cor').innerText = p.cor;
             document.getElementById('preview-preco').innerText = formatarMoeda(p.preco);
             prev.style.display = 'block'; btn.disabled = false;
-        } else {
-            pecaSelecionadaParaVenda = null; prev.style.display = 'none'; btn.disabled = true;
-        }
+        } else { pecaSelecionadaParaVenda = null; prev.style.display = 'none'; btn.disabled = true; }
     }
 
     function registrarVenda() {
@@ -540,19 +537,14 @@
             fone: document.getElementById('venda-cliente-fone').value.trim(), codigoPeca: pecaSelecionadaParaVenda.codigo,
             nomePeca: pecaSelecionadaParaVenda.nome, corPeca: pecaSelecionadaParaVenda.cor, precoFinal: pecaSelecionadaParaVenda.preco
         });
-
         const k = cNome.toUpperCase();
         if(!dbLive.status[k]) dbLive.status[k] = { pago: false, forma: "", entrega: "Aguardando" };
-
         const p = dbLive.pecas.find(x => x.codigo === pecaSelecionadaParaVenda.codigo);
         if(p) p.vendida = true;
-        
         salvarBanco();
         document.getElementById('venda-codigo-busca').value = '';
         buscarPecaPorCodigo(); atualizarTelas();
-        
-        const btn = document.getElementById('btn-confirmar-venda');
-        btn.innerHTML = "<i class='fa-solid fa-check'></i> Arrematado!";
+        const btn = document.getElementById('btn-confirmar-venda'); btn.innerHTML = "<i class='fa-solid fa-check'></i> Arrematado!";
         setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-check-circle'></i> Confirmar Arremate"; }, 1500);
     }
 
@@ -565,7 +557,7 @@
         }
     }
 
-    // --- LOGÍSTICA E NUVEM (MANTIDOS IGUAIZINHOS AO ÚLTIMO) ---
+    // LOGÍSTICA
     function agruparSacolas() {
         const s = {};
         dbLive.vendas.forEach(v => {
@@ -593,6 +585,7 @@
         window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, '_blank');
     }
 
+    // NUVEM: PACOTES
     function prepararPacote() {
         return {
             p: dbLive.pecas.map(x => [x.codigo, x.nome, x.cor, x.preco, x.vendida?1:0]),
@@ -608,9 +601,40 @@
         return nDb;
     }
 
+    // NUVEM: GOOGLE DRIVE
+    function salvarLinkDrive() { localStorage.setItem('mania_forever_drive_url', document.getElementById('url-google-script').value.trim()); }
+
+    async function salvarNoDrive() {
+        const url = document.getElementById('url-google-script').value.trim();
+        if(!url) return alert("Cole o Link do App da Web do Google Script!");
+        document.getElementById('btn-gerar-drive').innerText = "Salvando...";
+        try {
+            const dataToSave = LZString.compressToBase64(JSON.stringify(prepararPacote()));
+            await fetch(url, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: dataToSave });
+            alert("Backup salvo no seu Google Drive com sucesso!");
+        } catch(e) { alert("Erro de conexão com o Drive."); }
+        document.getElementById('btn-gerar-drive').innerHTML = "<i class='fa-solid fa-cloud-arrow-up'></i> Salvar no Drive";
+    }
+
+    async function baixarDoDrive() {
+        const url = document.getElementById('url-google-script').value.trim();
+        if(!url) return alert("Cole o Link do App da Web do Google Script!");
+        if(!confirm("Substituir dados atuais pelos da nuvem?")) return;
+        document.getElementById('btn-baixar-drive').innerText = "Baixando...";
+        try {
+            const resp = await fetch(url);
+            const data64 = await resp.text();
+            if(data64) {
+                dbLive = desempacotarPacote(JSON.parse(LZString.decompressFromBase64(data64)));
+                salvarBanco(); alert("Dados Sincronizados!"); showSection('dashboard');
+            } else { alert("Nenhum dado encontrado."); }
+        } catch(e) { alert("Erro ao baixar do Drive."); }
+        document.getElementById('btn-baixar-drive').innerHTML = "<i class='fa-solid fa-cloud-arrow-down'></i> Puxar do Drive";
+    }
+
+    // NUVEM: JSONBIN PÚBLICO
     async function salvarNaNuvem() {
-        document.getElementById('btn-gerar-nuvem').style.display = 'none';
-        document.getElementById('loading-nuvem').style.display = 'block';
+        document.getElementById('btn-gerar-nuvem').innerText = "Conectando...";
         try {
             const resp = await fetch("https://api.jsonbin.io/v3/b", {
                 method: "POST", headers: { "Content-Type": "application/json", "X-Bin-Private": "false" },
@@ -619,9 +643,8 @@
             if(!resp.ok) throw new Error();
             const data = await resp.json();
             document.getElementById('nuvem-codigo-gerado').value = data.metadata.id;
-        } catch(e) { alert("Sua operadora bloqueou a Nuvem. Use o Modo Offline abaixo."); }
-        document.getElementById('btn-gerar-nuvem').style.display = 'inline-block';
-        document.getElementById('loading-nuvem').style.display = 'none';
+        } catch(e) { alert("Erro. Tente o modo offline ou Google Drive."); }
+        document.getElementById('btn-gerar-nuvem').innerHTML = "<i class='fa-solid fa-cloud-arrow-up'></i> Gerar Código Numérico";
     }
 
     async function baixarDaNuvem() {
@@ -630,9 +653,7 @@
         if(id.length > 50) return lerOffline(id); 
 
         if(!confirm("Substituir dados atuais?")) return;
-        document.getElementById('btn-baixar-nuvem').style.display = 'none';
-        document.getElementById('loading-baixar').style.display = 'block';
-        
+        document.getElementById('btn-baixar-nuvem').innerText = "Baixando...";
         try {
             const resp = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`);
             if(resp.ok) {
@@ -640,11 +661,11 @@
                 dbLive = desempacotarPacote(data.record);
                 salvarBanco(); alert("Sincronizado!"); showSection('dashboard');
             } else { alert("Código não encontrado."); }
-        } catch(e) { alert("Erro ao baixar. Tente o código Offline se não funcionar."); }
-        document.getElementById('btn-baixar-nuvem').style.display = 'inline-block';
-        document.getElementById('loading-baixar').style.display = 'none';
+        } catch(e) { alert("Erro ao baixar."); }
+        document.getElementById('btn-baixar-nuvem').innerHTML = "<i class='fa-solid fa-cloud-arrow-down'></i> Sincronizar Agora";
     }
 
+    // NUVEM: OFFLINE
     function gerarOffline() {
         const cod = LZString.compressToBase64(JSON.stringify(prepararPacote()));
         const txt = document.getElementById('sync-code-offline');
@@ -661,7 +682,7 @@
         } catch(e) { alert("Código offline corrompido."); }
     }
 
-    // --- ATUALIZAR INTERFACE PRINCIPAL ---
+    // ATUALIZAÇÃO DA INTERFACE
     function atualizarTelas() {
         atualizarCodigoGerado();
 
@@ -738,7 +759,11 @@
         }
     }
 
-    window.onload = () => { atualizarTelas(); showSection('dashboard'); };
+    window.onload = () => { 
+        document.getElementById('url-google-script').value = localStorage.getItem('mania_forever_drive_url') || '';
+        atualizarTelas(); 
+        showSection('dashboard'); 
+    };
 </script>
 </body>
 </html>
