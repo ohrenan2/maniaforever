@@ -82,31 +82,41 @@
         .bg-green { background: #dcfce7; color: #15803d; }
         .bg-gray { background: #f1f5f9; color: #475569; }
         .bg-red { background: #fee2e2; color: #b91c1c; }
-        .bg-yellow { background: #fef3c7; color: #b45309; }
 
         .btn-delete { background: transparent; color: #94a3b8; border: none; cursor: pointer; font-size: 1.2rem; padding: 4px 8px; border-radius: 4px; transition: 0.2s; }
         .btn-delete:hover { color: var(--danger); background: #fee2e2; }
 
-        .resumo-cliente { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1rem; background: #fff; }
-        .resumo-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-light); padding-bottom: 1rem; margin-bottom: 1rem; }
+        .resumo-cliente { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1.rem; background: #fff; }
+        .resumo-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-light); padding-bottom: 1rem; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px;}
         .resumo-header h4 { font-size: 1.2rem; margin: 0; color: var(--primary); }
-        .btn-whatsapp { background: #25D366; color: white; padding: 8px 16px; border-radius: 99px; font-weight: 700; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer;}
-        .btn-whatsapp:hover { filter: brightness(1.1); }
+        
+        .btn-whatsapp { color: white; padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; border: none; cursor: pointer; transition: 0.2s;}
+        .btn-whatsapp:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .zap-cobranca { background: #25D366; }
+        .zap-aviso { background: #f59e0b; }
+        .zap-posvenda { background: var(--accent); }
+        .zap-group { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-top: 15px;}
 
-        select.status-select { padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; width: 100%; }
-        select.status-pendente { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
-        select.status-pago { background: #dcfce7; color: #15803d; border-color: #86efac; }
-        select.status-neutro { background: #f1f5f9; color: #475569; }
+        select.status-select { padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; width: 100%; outline: none; cursor: pointer;}
+        select.status-pendente { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+        select.status-pago { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        select.status-neutro { background: #f1f5f9; color: #475569; border: 1px solid var(--border); }
 
-        /* AREA DE IMPRESSÃO (PDF DECORADO) */
-        #print-area { display: none; }
+        /* AREAS DE IMPRESSÃO (PDF DECORADO) */
+        #print-area-catalogo, #print-area-relatorio { display: none; }
+        
         @media print {
-            body.printing-lista * { visibility: hidden; }
-            body.printing-lista #print-area, body.printing-lista #print-area * { visibility: visible; }
-            body.printing-lista #print-area { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; }
-            body.printing-lista { background: white; }
+            body.printing-catalogo * { visibility: hidden; }
+            body.printing-catalogo #print-area-catalogo, body.printing-catalogo #print-area-catalogo * { visibility: visible; }
+            body.printing-catalogo #print-area-catalogo { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; }
+            body.printing-catalogo { background: white; }
+
+            body.printing-relatorio * { visibility: hidden; }
+            body.printing-relatorio #print-area-relatorio, body.printing-relatorio #print-area-relatorio * { visibility: visible; }
+            body.printing-relatorio #print-area-relatorio { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; }
+            body.printing-relatorio { background: white; }
             
-            /* Decoração do PDF */
+            /* Decoração Geral PDF */
             .pdf-header { text-align: center; border-bottom: 3px solid #ec4899; padding-bottom: 20px; margin-bottom: 30px; }
             .pdf-header h1 { font-size: 32px; color: #000; text-transform: uppercase; margin: 0; letter-spacing: 2px; }
             .pdf-header h1 span { color: #ec4899; }
@@ -114,10 +124,14 @@
             
             .pdf-table { width: 100%; border-collapse: collapse; }
             .pdf-table th { background-color: #fce7f3 !important; color: #be185d !important; padding: 12px; text-align: left; font-size: 14px; border-bottom: 2px solid #ec4899; }
-            .pdf-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; color: #333; }
-            .pdf-row-vendida td { color: #94a3b8; text-decoration: line-through; }
-            .pdf-badge-vendida { color: #ef4444; font-weight: bold; font-size: 12px; text-decoration: none !important; display: inline-block; }
-            .pdf-badge-livre { color: #10b981; font-weight: bold; font-size: 12px; }
+            .pdf-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 16px; color: #333; }
+            
+            /* Estilo Específico Catálogo */
+            .pdf-cod-destaque { font-size: 22px; font-weight: 900; color: #000; }
+            .pdf-preco-destaque { font-size: 18px; font-weight: 800; color: #10b981; }
+            .pdf-row-vendida td { color: #cbd5e1; text-decoration: line-through; }
+            .pdf-row-vendida .pdf-cod-destaque { color: #cbd5e1; }
+            .pdf-row-vendida .pdf-preco-destaque { color: #cbd5e1; }
         }
 
         @media (max-width: 900px) {
@@ -130,6 +144,8 @@
             .input-grid { grid-template-columns: 1fr !important; gap: 0; }
             h2 { font-size: 1.6rem; margin-bottom: 1.5rem; }
             .card { padding: 1.25rem; margin-bottom: 1rem; }
+            .zap-group { justify-content: flex-start; }
+            .zap-group a { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -162,7 +178,11 @@
         
         <!-- DASHBOARD -->
         <div id="dashboard" class="section active">
-            <h2>Visão Geral da Live</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 2.5rem; gap: 15px;">
+                <h2 style="margin: 0;">Visão Geral da Live</h2>
+                <button class="btn-outline" style="width: auto;" onclick="imprimirPDFRelatorio()"><i class="fa-solid fa-file-pdf"></i> Relatório de Vendas (PDF)</button>
+            </div>
+            
             <div class="grid-2">
                 <div class="card" style="border-left: 4px solid var(--accent); background: var(--primary); color: white;">
                     <h3 style="color: #94a3b8; font-size: 1rem;">Faturamento em Tempo Real</h3>
@@ -191,7 +211,7 @@
         <div id="pecas" class="section">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 2.5rem; gap: 15px;">
                 <h2 style="margin: 0;">Estoque / Peças da Live</h2>
-                <button class="btn-outline" style="width: auto;" onclick="imprimirPDFPecas()"><i class="fa-solid fa-print"></i> Imprimir Catálogo (PDF)</button>
+                <button class="btn-outline" style="width: auto;" onclick="imprimirPDFPecas()"><i class="fa-solid fa-print"></i> Imprimir Catálogo Limpo (PDF)</button>
             </div>
             
             <div class="card">
@@ -239,9 +259,7 @@
 
             <div class="card" style="border: 2px solid var(--accent-light);">
                 <form onsubmit="event.preventDefault(); registrarVenda();">
-                    
                     <div class="grid-2">
-                        <!-- DADOS DA CLIENTE SEPARADOS -->
                         <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
                             <h4 style="margin-bottom: 1rem; color: var(--primary);"><i class="fa-solid fa-user"></i> Dados da Cliente</h4>
                             
@@ -261,7 +279,6 @@
                             </div>
                         </div>
 
-                        <!-- BUSCA DE PEÇA -->
                         <div style="background: #fff; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--accent);">
                             <h4 style="margin-bottom: 1rem; color: var(--accent);"><i class="fa-solid fa-tag"></i> Informações da Peça</h4>
                             
@@ -280,7 +297,6 @@
                             <button type="submit" class="btn-success" id="btn-confirmar-venda" disabled><i class="fa-solid fa-check-circle"></i> Confirmar Arremate</button>
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>
@@ -288,15 +304,19 @@
         <!-- ABA VENDA POR PESSOA -->
         <div id="por-pessoa" class="section">
             <h2>Fechamento de Sacolas</h2>
-            <p style="color: #64748b; margin-bottom: 2rem;">Veja o resumo de cada cliente para enviar o total no WhatsApp após a Live.</p>
+            <p style="color: #64748b; margin-bottom: 2rem;">Veja o resumo de cada cliente e envie mensagens de cobrança, alerta ou pós-venda.</p>
 
             <div id="container-sacolas"></div>
         </div>
 
-        <!-- NOVA ABA: CONTROLE E LOGÍSTICA -->
+        <!-- ABA CONTROLE E LOGÍSTICA -->
         <div id="logistica" class="section">
-            <h2>Controle de Pagamentos e Envios</h2>
-            <p style="color: #64748b; margin-bottom: 2rem;">Gerencie o status financeiro e a entrega das sacolas finalizadas.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 2.5rem; gap: 15px;">
+                <h2 style="margin: 0;">Controle de Pagamentos e Envios</h2>
+                <button class="btn-outline" style="width: auto; background: #25D366; color: white; border: none;" onclick="gerarResumoLogisticaZap()"><i class="fa-brands fa-whatsapp"></i> Enviar Lista Logística no ZAP</button>
+            </div>
+            
+            <p style="color: #64748b; margin-bottom: 2rem;">Acompanhe o andamento das entregas e os valores recebidos.</p>
 
             <div class="card">
                 <div class="table-container">
@@ -338,47 +358,67 @@
 
     </div>
 
-    <!-- ÁREA DE IMPRESSÃO (FICA ESCONDIDA ATÉ CLICAR EM IMPRIMIR) -->
-    <div id="print-area">
+    <!-- ÁREA DE IMPRESSÃO - CATÁLOGO DE PEÇAS (FICA ESCONDIDA) -->
+    <div id="print-area-catalogo">
         <div class="pdf-header">
             <h1>MANIA FOREVER <span>LIVE SHOP</span></h1>
-            <p id="pdf-data-hora">Catálogo de Peças - Gerado em: --</p>
+            <p id="pdf-data-hora-catalogo">Catálogo Limpo - Gerado em: --</p>
         </div>
         <table class="pdf-table">
             <thead>
                 <tr>
-                    <th>Cód</th>
-                    <th>Peça</th>
-                    <th>Detalhes</th>
-                    <th>Preço</th>
-                    <th>Status</th>
+                    <th style="width: 25%;">CÓDIGO</th>
+                    <th style="width: 50%;">PEÇA / COR</th>
+                    <th style="width: 25%;">PREÇO</th>
                 </tr>
             </thead>
-            <tbody id="pdf-tbody">
-            </tbody>
+            <tbody id="pdf-tbody-catalogo"></tbody>
+        </table>
+    </div>
+
+    <!-- ÁREA DE IMPRESSÃO - RELATÓRIO DE VENDAS (FICA ESCONDIDA) -->
+    <div id="print-area-relatorio">
+        <div class="pdf-header">
+            <h1>MANIA FOREVER <span>RELATÓRIO DE VENDAS</span></h1>
+            <p id="pdf-data-hora-relatorio">Relatório da Live - Gerado em: --</p>
+        </div>
+        
+        <div style="background: #f8fafc; border: 2px solid #ec4899; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 30px;">
+            <p style="margin: 0; font-size: 16px; color: #64748b; font-weight: bold; text-transform: uppercase;">Faturamento Total da Live</p>
+            <h2 id="pdf-relatorio-total" style="margin: 5px 0 0; color: #ec4899; font-size: 36px;">R$ 0,00</h2>
+        </div>
+
+        <table class="pdf-table">
+            <thead>
+                <tr>
+                    <th>Cliente / Sacola</th>
+                    <th>Valor Comprado</th>
+                    <th>Status / Pagamento</th>
+                    <th>Qtd. Peças</th>
+                </tr>
+            </thead>
+            <tbody id="pdf-tbody-relatorio"></tbody>
         </table>
     </div>
 
 <script>
-    // BANCO DE DADOS LOCAL - AGORA INCLUI STATUS LOGÍSTICO
-    let dbLive = JSON.parse(localStorage.getItem('mania_forever_live_v2')) || { 
+    // BANCO DE DADOS LOCAL
+    let dbLive = JSON.parse(localStorage.getItem('mania_forever_live_v3')) || { 
         pecas: [], 
         vendas: [], 
-        status: {} // Guardará o status por nome: { pago: false, forma: "", entrega: "Aguardando" }
+        status: {} 
     };
     
-    // Migração de banco antigo se existir
-    if(!localStorage.getItem('mania_forever_live_v2') && localStorage.getItem('mania_forever_live')) {
-        let oldDb = JSON.parse(localStorage.getItem('mania_forever_live'));
-        dbLive.pecas = oldDb.pecas || [];
-        dbLive.vendas = oldDb.vendas || [];
+    // Migração para v3
+    if(!localStorage.getItem('mania_forever_live_v3') && localStorage.getItem('mania_forever_live_v2')) {
+        dbLive = JSON.parse(localStorage.getItem('mania_forever_live_v2'));
         salvarBanco();
     }
 
     let pecaSelecionadaParaVenda = null;
 
     function salvarBanco() {
-        localStorage.setItem('mania_forever_live_v2', JSON.stringify(dbLive));
+        localStorage.setItem('mania_forever_live_v3', JSON.stringify(dbLive));
     }
 
     // NAVEGAÇÃO
@@ -403,7 +443,7 @@
     }
 
     // ==========================================
-    // MÓDULO: PEÇAS E IMPRESSÃO (PDF DECORADO)
+    // MÓDULO: PEÇAS E IMPRESSÕES (PDF)
     // ==========================================
     
     function atualizarCodigoGerado() {
@@ -436,39 +476,69 @@
         }
     }
 
+    // PDF 1: Catálogo Limpo (Só o necessário pra Live)
     function imprimirPDFPecas() {
-        const tbody = document.getElementById('pdf-tbody');
+        const tbody = document.getElementById('pdf-tbody-catalogo');
         tbody.innerHTML = "";
         
         const pecasOrdenadas = [...dbLive.pecas].sort((a,b) => a.preco - b.preco);
         
+        // Exibe apenas CÓDIGO GIGANTE, NOME+COR, PREÇO (Oculta vendidas ou risca)
         pecasOrdenadas.forEach(p => {
-            let rowClass = p.vendida ? 'pdf-row-vendida' : '';
-            let status = p.vendida ? '<span class="pdf-badge-vendida">❌ VENDIDA</span>' : '<span class="pdf-badge-livre">✅ DISPONÍVEL</span>';
+            if(p.vendida) return; // Se quiser que as vendidas não apareçam pra limpar a lista
             
             tbody.innerHTML += `
-                <tr class="${rowClass}">
-                    <td style="font-weight:bold;">${p.codigo}</td>
-                    <td style="font-weight:bold;">${p.nome}</td>
-                    <td>${p.cor}</td>
-                    <td style="font-weight:bold;">${formatarMoeda(p.preco)}</td>
-                    <td>${status}</td>
+                <tr>
+                    <td class="pdf-cod-destaque">${p.codigo}</td>
+                    <td><strong style="font-size: 18px;">${p.nome}</strong><br><span style="color:#64748b;">${p.cor}</span></td>
+                    <td class="pdf-preco-destaque">${formatarMoeda(p.preco)}</td>
                 </tr>
             `;
         });
 
-        document.getElementById('pdf-data-hora').innerText = "Catálogo gerado em: " + new Date().toLocaleString('pt-BR');
+        document.getElementById('pdf-data-hora-catalogo').innerText = "Lista Simplificada para a Live - Gerado em: " + new Date().toLocaleString('pt-BR');
         
-        document.body.classList.add('printing-lista');
+        document.body.classList.add('printing-catalogo');
         window.print();
-        
-        setTimeout(() => {
-            document.body.classList.remove('printing-lista');
-        }, 500);
+        setTimeout(() => { document.body.classList.remove('printing-catalogo'); }, 500);
+    }
+
+    // PDF 2: Relatório de Vendas Total
+    function imprimirPDFRelatorio() {
+        const tbody = document.getElementById('pdf-tbody-relatorio');
+        tbody.innerHTML = "";
+
+        const sacolas = agruparSacolas();
+        const chaves = Object.keys(sacolas);
+        let totalLive = 0;
+
+        chaves.forEach(chave => {
+            const sacola = sacolas[chave];
+            totalLive += sacola.total;
+            let status = dbLive.status[chave] || { pago: false, forma: "Não Informado" };
+            
+            let statusPgto = status.pago ? `<span style="color:#10b981; font-weight:bold;">Pago (${status.forma})</span>` : `<span style="color:#ef4444; font-weight:bold;">Pendente</span>`;
+
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${sacola.nome}</strong></td>
+                    <td style="font-weight:bold; color:#000;">${formatarMoeda(sacola.total)}</td>
+                    <td>${statusPgto}</td>
+                    <td>${sacola.pecas.length} un.</td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('pdf-relatorio-total').innerText = formatarMoeda(totalLive);
+        document.getElementById('pdf-data-hora-relatorio').innerText = "Fechamento da Live - Gerado em: " + new Date().toLocaleString('pt-BR');
+
+        document.body.classList.add('printing-relatorio');
+        window.print();
+        setTimeout(() => { document.body.classList.remove('printing-relatorio'); }, 500);
     }
 
     // ==========================================
-    // MÓDULO: LANÇAMENTO 
+    // MÓDULO: LANÇAMENTO RÁPIDO
     // ==========================================
 
     function buscarPecaPorCodigo() {
@@ -484,7 +554,6 @@
         }
 
         let codigoPesquisa = inputStr;
-
         if (/^\d+$/.test(inputStr)) {
             const numero = parseInt(inputStr, 10);
             codigoPesquisa = "MF-" + String(numero).padStart(3, '0');
@@ -527,10 +596,9 @@
             dataHora: new Date().toLocaleString('pt-BR')
         });
 
-        // Inicializa o status financeiro do cliente se não existir
         const chaveCli = clienteNome.toUpperCase();
         if(!dbLive.status[chaveCli]) {
-            dbLive.status[chaveCli] = { pago: false, forma: "", entrega: "Aguardando Separação" };
+            dbLive.status[chaveCli] = { pago: false, forma: "", entrega: "Aguardando" };
         }
 
         const p = dbLive.pecas.find(x => x.codigo === pecaSelecionadaParaVenda.codigo);
@@ -561,18 +629,16 @@
     }
 
     // ==========================================
-    // MÓDULO: NUVEM (EMPACOTAMENTO)
+    // MÓDULO: NUVEM COMPACTADA
     // ==========================================
     
     function gerarCodigoSync() {
         try {
-            // Empacota Peças e Vendas em arrays pra economizar MUITO espaço
             const pacote = {
                 p: dbLive.pecas.map(p => [p.codigo, p.nome, p.cor, p.preco, p.vendida ? 1 : 0]),
                 v: dbLive.vendas.map(v => [v.id, v.clienteNome, v.clienteUser || "", v.fone, v.codigoPeca, v.nomePeca, v.corPeca, v.precoFinal]),
-                s: dbLive.status // Mantém objeto pois é pequeno
+                s: dbLive.status
             };
-            
             const dadosStr = JSON.stringify(pacote);
             const codigoComprimido = LZString.compressToBase64(dadosStr);
             
@@ -581,9 +647,7 @@
             textarea.select();
             navigator.clipboard.writeText(codigoComprimido);
             alert("Código super reduzido copiado com sucesso!");
-        } catch(e) {
-            alert("Erro ao gerar código.");
-        }
+        } catch(e) { alert("Erro ao gerar código."); }
     }
 
     function importarCodigoSync() {
@@ -596,62 +660,81 @@
                 if (!dadosStr || dadosStr === "") throw new Error("Código vazio.");
 
                 const pacote = JSON.parse(dadosStr);
-                
                 let novoDb = { pecas: [], vendas: [], status: pacote.s || {} };
-                if(pacote.p) {
-                    novoDb.pecas = pacote.p.map(arr => ({codigo: arr[0], nome: arr[1], cor: arr[2], preco: arr[3], vendida: arr[4] === 1}));
-                }
-                if(pacote.v) {
-                    novoDb.vendas = pacote.v.map(arr => ({id: arr[0], clienteNome: arr[1], clienteUser: arr[2], fone: arr[3], codigoPeca: arr[4], nomePeca: arr[5], corPeca: arr[6], precoFinal: arr[7], dataHora: new Date().toLocaleString('pt-BR')}));
-                }
+                if(pacote.p) novoDb.pecas = pacote.p.map(arr => ({codigo: arr[0], nome: arr[1], cor: arr[2], preco: arr[3], vendida: arr[4] === 1}));
+                if(pacote.v) novoDb.vendas = pacote.v.map(arr => ({id: arr[0], clienteNome: arr[1], clienteUser: arr[2], fone: arr[3], codigoPeca: arr[4], nomePeca: arr[5], corPeca: arr[6], precoFinal: arr[7], dataHora: new Date().toLocaleString('pt-BR')}));
                 
-                if(novoDb.pecas) {
-                    dbLive = novoDb;
-                    salvarBanco();
-                    document.getElementById('sync-code-input').value = '';
-                    alert("Dados importados com sucesso!");
-                    showSection('dashboard');
-                }
-            } catch(e) {
-                alert("Código inválido. Verifique se copiou tudo e tentou o código novo.");
-            }
+                dbLive = novoDb;
+                salvarBanco();
+                document.getElementById('sync-code-input').value = '';
+                alert("Dados importados com sucesso!");
+                showSection('dashboard');
+            } catch(e) { alert("Código inválido. Verifique se copiou tudo."); }
         }
     }
 
     // ==========================================
-    // MÓDULO: LOGÍSTICA E STATUS
+    // MÓDULO: LOGÍSTICA E RENDERIZAÇÕES
     // ==========================================
 
+    function agruparSacolas() {
+        const sacolas = {};
+        dbLive.vendas.forEach(v => {
+            const nomeStr = v.clienteNome || v.cliente || "Sem Nome";
+            const chave = nomeStr.trim().toUpperCase();
+            if(!sacolas[chave]) {
+                sacolas[chave] = { nome: nomeStr, user: v.clienteUser || "", fone: v.fone, pecas: [], total: 0 };
+            }
+            sacolas[chave].pecas.push(v);
+            sacolas[chave].total += v.precoFinal;
+        });
+        return sacolas;
+    }
+
+    function formatarMoeda(valor) { return `R$ ${valor.toFixed(2).replace('.', ',')}`; }
+
     function atualizarStatusLogistica(clienteChave, campo, valor) {
-        if(!dbLive.status[clienteChave]) {
-            dbLive.status[clienteChave] = { pago: false, forma: "", entrega: "Aguardando Separação" };
-        }
-        
+        if(!dbLive.status[clienteChave]) dbLive.status[clienteChave] = { pago: false, forma: "", entrega: "Aguardando" };
         if (campo === 'pago') dbLive.status[clienteChave].pago = (valor === 'true');
         else if (campo === 'forma') dbLive.status[clienteChave].forma = valor;
         else if (campo === 'entrega') dbLive.status[clienteChave].entrega = valor;
-        
         salvarBanco();
-        atualizarTelas(); // Atualiza cores
+        atualizarTelas(); 
     }
 
-    // ==========================================
-    // MÓDULO: RENDERIZAÇÕES 
-    // ==========================================
+    function gerarResumoLogisticaZap() {
+        const sacolas = agruparSacolas();
+        let texto = "📊 *RESUMO LOGÍSTICA - LIVE SHOP* 📊\n\n";
+        
+        let pendentes = [];
+        let pagosEntregar = [];
+        let finalizados = [];
 
-    function formatarMoeda(valor) {
-        return `R$ ${valor.toFixed(2).replace('.', ',')}`;
+        Object.keys(sacolas).forEach(k => {
+            const s = sacolas[k];
+            const st = dbLive.status[k] || {pago: false, entrega: "Aguardando"};
+            const desc = `🛍️ ${s.nome} - ${formatarMoeda(s.total)}`;
+            
+            if(!st.pago) pendentes.push(desc);
+            else if(st.pago && (st.entrega === "Aguardando" || st.entrega === "Pronto para Retirada")) pagosEntregar.push(desc + ` (${st.entrega})`);
+            else finalizados.push(desc);
+        });
+
+        texto += "❌ *AGUARDANDO PAGAMENTO:*\n" + (pendentes.length > 0 ? pendentes.join("\n") : "Nenhum") + "\n\n";
+        texto += "📦 *PAGO - FALTA ENTREGAR/RETIRAR:*\n" + (pagosEntregar.length > 0 ? pagosEntregar.join("\n") : "Nenhum") + "\n\n";
+        texto += "✅ *FINALIZADOS (Pago e Entregue):*\n" + (finalizados.length > 0 ? finalizados.join("\n") : "Nenhum");
+
+        const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+        window.open(url, '_blank');
     }
 
     function atualizarTelas() {
         atualizarCodigoGerado();
 
-        // 1. ABA PEÇAS
+        // ABA PEÇAS
         const tbodyPecas = document.getElementById('lista-pecas');
         tbodyPecas.innerHTML = "";
-        
         const pecasOrdenadas = [...dbLive.pecas].sort((a,b) => a.preco - b.preco);
-        
         pecasOrdenadas.forEach((p) => {
             let statusBadge = p.vendida ? `<span class="badge bg-red" style="font-size:0.65rem;">Vendida</span>` : `<span class="badge bg-green" style="font-size:0.65rem;">Livre</span>`;
             tbodyPecas.innerHTML += `
@@ -660,19 +743,16 @@
                     <td style="font-weight:700;">${p.nome} ${statusBadge}</td>
                     <td>${p.cor}</td>
                     <td style="color:var(--success); font-weight:bold;">${formatarMoeda(p.preco)}</td>
-                    <td style="text-align: right;">
-                        <button onclick="deletarPeca('${p.codigo}')" class="btn-delete" title="Apagar Peça"><i class="fa-solid fa-trash"></i></button>
-                    </td>
+                    <td style="text-align: right;"><button onclick="deletarPeca('${p.codigo}')" class="btn-delete" title="Apagar Peça"><i class="fa-solid fa-trash"></i></button></td>
                 </tr>
             `;
         });
         if(dbLive.pecas.length === 0) tbodyPecas.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Nenhuma peça cadastrada.</td></tr>";
 
-        // 2. ABA DASHBOARD
+        // ABA DASHBOARD
         let totalFaturado = 0;
         const tbodyDashboard = document.getElementById('lista-ultimas-vendas');
         tbodyDashboard.innerHTML = "";
-        
         dbLive.vendas.slice().reverse().forEach(v => {
             totalFaturado += v.precoFinal;
             let displayCliente = v.clienteUser ? `${v.clienteNome} <span style="font-size:0.8rem; color:#94a3b8;">(${v.clienteUser})</span>` : v.clienteNome;
@@ -685,35 +765,19 @@
                 </tr>
             `;
         });
-        
         document.getElementById('dash-total-vendas').innerText = formatarMoeda(totalFaturado);
         document.getElementById('dash-qtd-pecas').innerText = dbLive.vendas.length;
         if(dbLive.vendas.length === 0) tbodyDashboard.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Nenhum arremate ainda.</td></tr>";
 
-        // 3. ABA SACOLAS E ABA LOGÍSTICA
+        // ABA SACOLAS E LOGÍSTICA
         const containerSacolas = document.getElementById('container-sacolas');
         const tbodyLogistica = document.getElementById('lista-logistica');
         containerSacolas.innerHTML = "";
         tbodyLogistica.innerHTML = "";
 
-        const sacolas = {};
-        dbLive.vendas.forEach(v => {
-            const nomeStr = v.clienteNome || v.cliente || "Sem Nome"; // Falback v.cliente para bd antigo
-            const chave = nomeStr.trim().toUpperCase();
-            if(!sacolas[chave]) {
-                sacolas[chave] = { 
-                    nome: nomeStr, 
-                    user: v.clienteUser || "", 
-                    fone: v.fone, 
-                    pecas: [], 
-                    total: 0 
-                };
-            }
-            sacolas[chave].pecas.push(v);
-            sacolas[chave].total += v.precoFinal;
-        });
-
+        const sacolas = agruparSacolas();
         const chaves = Object.keys(sacolas);
+        
         if(chaves.length === 0) {
             containerSacolas.innerHTML = "<div class='card' style='text-align:center; color:#94a3b8;'>Nenhuma sacola aberta ainda.</div>";
             tbodyLogistica.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Nenhuma venda registrada.</td></tr>";
@@ -721,17 +785,20 @@
             chaves.forEach(chave => {
                 const sacola = sacolas[chave];
                 
-                // MENSAGEM DO WHATSAPP DECORADA E HUMANIZADA COM PRAZO
-                let textoZap = `Oiii *${sacola.nome}*! Tudo bem? 💖✨\n\nPassando pra te mandar o resumo maravilhoso das peças que você garantiu na nossa Live! 🥰🛍️\n\n`;
-                sacola.pecas.forEach(p => {
-                    textoZap += `👗 *${p.codigoPeca}* | ${p.nomePeca} (${p.corPeca})\n👉 *${formatarMoeda(p.precoFinal)}*\n\n`;
-                });
-                textoZap += `💰 *TOTAL DA SUA SACOLA: ${formatarMoeda(sacola.total)}*\n\n`;
-                textoZap += `⚠️ Você tem até *24 horas* para realizar o pagamento e garantir suas peças, tá bom? ⏳🏃‍♀️\n\n`;
-                textoZap += `Me conta, amor: Qual vai ser a *forma de pagamento*? E como prefere fazer a *retirada/envio*? 📦🚗\n\n`;
-                textoZap += `_(Lembrando que pagamentos via maquininha e plataformas possuem acréscimo das taxas)_ 😉😘`;
-                
-                const linkZap = sacola.fone ? `https://wa.me/55${sacola.fone.replace(/\D/g,'')}?text=${encodeURIComponent(textoZap)}` : '#';
+                // MENSAGEM 1: COBRANÇA PADRÃO
+                let msgCobranca = `Oiii *${sacola.nome}*! Tudo bem? 💖✨\n\nPassando pra te mandar o resumo maravilhoso das peças que você garantiu na nossa Live! 🥰🛍️\n\n`;
+                sacola.pecas.forEach(p => { msgCobranca += `👗 *${p.codigoPeca}* | ${p.nomePeca} (${p.corPeca})\n👉 *${formatarMoeda(p.precoFinal)}*\n\n`; });
+                msgCobranca += `💰 *TOTAL DA SUA SACOLA: ${formatarMoeda(sacola.total)}*\n\n⚠️ Você tem até *24 horas* para realizar o pagamento e garantir suas peças, tá bom? ⏳🏃‍♀️\n\nMe conta, amor: Qual vai ser a *forma de pagamento*? E como prefere fazer a *retirada/envio*? 📦🚗\n\n_(Lembrando que pagamentos via maquininha possuem acréscimo das taxas)_ 😉😘`;
+                const linkCobranca = `https://wa.me/55${sacola.fone.replace(/\D/g,'')}?text=${encodeURIComponent(msgCobranca)}`;
+
+                // MENSAGEM 2: AVISO CANCELAMENTO / PERDA DE PRIORIDADE
+                let msgAviso = `Oiii *${sacola.nome}*! 🥺 Passando pra avisar que sua sacola está aguardando fechamento. 🛍️\n\nComo as peças são muito exclusivas, precisamos liberar o estoque caso a sacola não seja finalizada em breve.\n\n⚠️ Lembrando amor, que cancelamentos sem aviso prévio fazem com que você *perca a prioridade de compra* nas nossas próximas Lives, tá bom? 😔\n\nMe avisa se podemos finalizar e garantir seus looks! 💖✨`;
+                const linkAviso = `https://wa.me/55${sacola.fone.replace(/\D/g,'')}?text=${encodeURIComponent(msgAviso)}`;
+
+                // MENSAGEM 3: PÓS-VENDA
+                let msgPosVenda = `Oiii *${sacola.nome}*! 🥰💖\n\nPassando aqui pra te agradecer de todo o coração por ter participado da nossa Live e garantido suas peças! Foi incrível ter você com a gente. ✨🛍️\n\nEspero que você ame muito cada detalhe. Quando usar, não esquece de marcar a gente lá no Instagram, vou amar ver você arrasando com nossos looks! 😍📸\n\nUm beijão enorme e até a próxima Live! 😘💖`;
+                const linkPosVenda = `https://wa.me/55${sacola.fone.replace(/\D/g,'')}?text=${encodeURIComponent(msgPosVenda)}`;
+
                 const styleBtnZap = sacola.fone ? '' : 'opacity: 0.5; pointer-events: none;';
 
                 let htmlPecas = '';
@@ -757,17 +824,16 @@
                             <h3 style="margin:0; color:var(--success);">${formatarMoeda(sacola.total)}</h3>
                         </div>
                         <div style="margin-bottom: 1rem;">${htmlPecas}</div>
-                        <div style="text-align: right;">
-                            <a href="${linkZap}" target="_blank" class="btn-whatsapp" style="${styleBtnZap}">
-                                <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Enviar Resumo Fofo
-                            </a>
+                        <div class="zap-group">
+                            <a href="${sacola.fone ? linkCobranca : '#'}" target="_blank" class="btn-whatsapp zap-cobranca" style="${styleBtnZap}"><i class="fa-brands fa-whatsapp"></i> Cobrar Sacola</a>
+                            <a href="${sacola.fone ? linkAviso : '#'}" target="_blank" class="btn-whatsapp zap-aviso" style="${styleBtnZap}"><i class="fa-solid fa-triangle-exclamation"></i> Aviso de Cancelamento</a>
+                            <a href="${sacola.fone ? linkPosVenda : '#'}" target="_blank" class="btn-whatsapp zap-posvenda" style="${styleBtnZap}"><i class="fa-solid fa-heart"></i> Pós-Venda Fofo</a>
                         </div>
                     </div>
                 `;
 
-                // PREENCHIMENTO DA ABA LOGÍSTICA
+                // LOGISTICA
                 let status = dbLive.status[chave] || { pago: false, forma: "", entrega: "Aguardando" };
-                
                 let selectPgtoClass = status.pago ? 'status-pago' : 'status-pendente';
                 let selectEntregaClass = status.entrega.includes("Entregue") || status.entrega.includes("Enviado") ? 'status-pago' : (status.entrega.includes("Pronto") ? 'status-neutro' : 'status-pendente');
 
