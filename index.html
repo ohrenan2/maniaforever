@@ -209,27 +209,6 @@
                 </div>
             </div>
             
- <div class="grid-3">
-                <div class="card" style="border-left: 4px solid var(--accent); background: var(--primary); color: white;">
-                    <h3 style="color: #94a3b8; font-size: 1rem;">Faturamento em Tempo Real</h3>
-                    <h2 id="dash-total-vendas" style="color: var(--accent); margin:0; font-size: 2.5rem;">R$ 0,00</h2>
-                </div>
-                <div class="card" style="border-left: 4px solid var(--success);">
-                    <h3 style="color: #64748b; font-size: 1rem;">Peças Arrematadas</h3>
-                    <h2 id="dash-qtd-pecas" style="color: var(--success); margin:0; font-size: 2.5rem;">0</h2>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Últimos Lançamentos</h3>
-                <div class="table-container">
-                    <table>
-                        <thead><tr><th>Cliente</th><th>Peça</th><th>Cor/Tamanho</th><th style="text-align: right;">Valor</th></tr></thead>
-                        <tbody id="lista-ultimas-vendas"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
 
         <!-- ABA PEÇAS -->
         <div id="pecas" class="section">
@@ -285,7 +264,8 @@
 
             <div class="card" style="border: 2px solid var(--accent-light);">
                 <form onsubmit="event.preventDefault(); registrarVenda();">
-                    <div class="grid-2">
+                    
+                    <div class="grid-3">
                         <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
                             <h4 style="margin-bottom: 1rem; color: var(--primary);"><i class="fa-solid fa-user"></i> Dados da Cliente</h4>
                             <div class="input-group"><label>Nome da Cliente</label><input type="text" id="venda-cliente-nome" required></div>
