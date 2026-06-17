@@ -4,21 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mania Forever - Sistema Live Shop</title>
-    <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23ec4899'/><text x='50%' y='53%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='38' font-weight='900' fill='%23fff'>MF</text></svg>">
+    
+    <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23000000'/><text x='50%' y='53%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='38' font-weight='900' fill='%23fff'>MF</text></svg>">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Biblioteca de Compressão -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mania Forever">
+    <link rel="apple-touch-icon" href="icon-192.png">
     
     <style>
         :root {
             --sidebar-bg: #000000; --sidebar-text: #ffffff;
-            --main-bg: #f8fafc; --card-bg: #ffffff;
-            --primary: #000000; --accent: #ec4899; 
-            --accent-hover: #db2777; --accent-light: #fce7f3;
-            --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --border: #e2e8f0;
+            --main-bg: #f1f5f9; --card-bg: #ffffff;
+            --primary: #000000; --accent: #475569; /* Cinza Chumbo */
+            --accent-hover: #1e293b; --accent-light: #e2e8f0; /* Cinza Claro */
+            --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --border: #cbd5e1;
             --radius-md: 10px; --radius-lg: 16px;
         }
 
@@ -27,20 +33,20 @@
 
         .mobile-header { display: none; padding: 1rem 1.5rem; background: var(--sidebar-bg); color: white; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 2000; width: 100%; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .mobile-header .logo { font-weight: 900; font-size: 1.5rem; margin: 0; }
-        .mobile-header .logo span { color: var(--accent); }
+        .mobile-header .logo span { color: #94a3b8; }
 
         #mobile-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 1400; opacity: 0; transition: opacity 0.3s; }
         #mobile-overlay.active { display: block; opacity: 1; }
 
-        .sidebar { width: 260px; background: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; padding: 2.5rem 1.5rem; position: fixed; height: 100vh; z-index: 1500; transition: transform 0.3s ease; }
+        .sidebar { width: 260px; background: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; padding: 2.5rem 1.5rem; position: fixed; height: 100vh; z-index: 1500; transition: transform 0.3s ease; border-right: 1px solid #333;}
         .sidebar .logo { font-weight: 900; font-size: 1.4rem; margin-bottom: 3.5rem; letter-spacing: -1px; text-transform: uppercase; line-height: 1.1; }
-        .sidebar .logo span { color: var(--accent); display: block; font-size: 1.8rem;}
+        .sidebar .logo span { color: #94a3b8; display: block; font-size: 1.8rem;}
         
         .nav-item { padding: 14px 16px; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; gap: 14px; margin-bottom: 8px; transition: all 0.2s ease; color: #94a3b8; font-weight: 500; font-size: 0.95rem; }
         .nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
-        .nav-item:hover, .nav-item.active { background: rgba(236, 72, 153, 0.15); color: var(--accent); }
+        .nav-item:hover, .nav-item.active { background: #1e293b; color: #fff; }
         .nav-item.active { font-weight: 700; position: relative; }
-        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 25%; height: 50%; width: 4px; background: var(--accent); border-radius: 0 4px 4px 0; }
+        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 25%; height: 50%; width: 4px; background: #fff; border-radius: 0 4px 4px 0; }
         
         .main-content { margin-left: 260px; flex: 1; padding: 3rem; overflow-x: hidden; width: calc(100% - 260px); }
         .section { display: none; animation: fadeIn 0.25s ease-out; width: 100%; max-width: 100%; }
@@ -59,16 +65,16 @@
         .input-group { margin-bottom: 1.25rem; display: flex; flex-direction: column; width: 100%; }
         label { font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #475569; text-transform: uppercase; }
         input, select { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 0.95rem; outline: none; transition: 0.2s; background: #fff; color: #0f172a; }
-        input[type="checkbox"] { width: auto; transform: scale(1.3); cursor: pointer; accent-color: var(--accent); }
-        input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2); }
-        input[readonly] { background: #f1f5f9; cursor: not-allowed; font-weight: bold; color: var(--accent); }
+        input[type="checkbox"] { width: auto; transform: scale(1.3); cursor: pointer; accent-color: var(--primary); }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1); }
+        input[readonly] { background: #f1f5f9; cursor: not-allowed; font-weight: bold; color: var(--primary); }
 
         .btn-primary { background: var(--primary); color: #fff; padding: 14px 28px; border-radius: var(--radius-md); border: none; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.2s; width: 100%; text-align: center; }
-        .btn-primary:hover { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: #333; color: #fff; }
         .btn-success { background: var(--success); color: #fff; padding: 14px 28px; border-radius: var(--radius-md); border: none; cursor: pointer; font-weight: 800; font-size: 1rem; transition: all 0.2s; width: 100%; }
         .btn-success:hover { filter: brightness(1.1); }
-        .btn-outline { background: transparent; border: 2px solid var(--accent); color: var(--accent); padding: 10px 20px; border-radius: var(--radius-md); cursor: pointer; font-weight: 700; transition: 0.2s;}
-        .btn-outline:hover { background: var(--accent); color: #fff; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 10px 20px; border-radius: var(--radius-md); cursor: pointer; font-weight: 700; transition: 0.2s;}
+        .btn-outline:hover { background: var(--primary); color: #fff; }
 
         .table-container { width: 100%; max-width: 100vw; overflow-x: auto; display: block; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
@@ -77,7 +83,7 @@
         tr:hover td { background: var(--accent-light); }
         
         .badge { padding: 6px 12px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; display: inline-block; text-transform: uppercase; }
-        .bg-pink { background: #fce7f3; color: #be185d; }
+        .bg-dark { background: #e2e8f0; color: #0f172a; }
         .bg-green { background: #dcfce7; color: #15803d; }
         .bg-red { background: #fee2e2; color: #b91c1c; }
 
@@ -103,56 +109,45 @@
         select.status-pago { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
         select.status-neutro { background: #f1f5f9; color: #475569; border: 1px solid var(--border); }
 
-        /* AREAS DE IMPRESSÃO (ESCONDIDAS NA TELA NORMAL) */
+        /* AREAS DE IMPRESSÃO */
         #print-area-catalogo, #print-area-relatorio, #print-area-etiquetas { display: none; }
         
-        /* REGRAS MÁGICAS DE IMPRESSÃO - CORES FORÇADAS E ESTILOS */
         @media print {
-            * { 
-                -webkit-print-color-adjust: exact !important; 
-                print-color-adjust: exact !important; 
-                color-adjust: exact !important; 
-            }
-            
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
             body * { visibility: hidden; } 
             .sidebar, .mobile-header { display: none !important; }
             
-            /* --- CATÁLOGO A4 --- */
+            /* CATÁLOGO A4 */
             body.printing-catalogo #print-area-catalogo, body.printing-catalogo #print-area-catalogo * { visibility: visible; }
             body.printing-catalogo #print-area-catalogo { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; }
             
-            /* --- RELATÓRIO A4 --- */
+            /* RELATÓRIO A4 */
             body.printing-relatorio #print-area-relatorio, body.printing-relatorio #print-area-relatorio * { visibility: visible; }
             body.printing-relatorio #print-area-relatorio { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; }
             
-            /* --- ETIQUETAS ARGOX (40x25mm) EM MASSA --- */
+            /* ETIQUETAS ARGOX */
             @page { margin: 0; }
             body.printing-etiquetas { background: #fff; margin: 0; padding: 0; }
             body.printing-etiquetas #print-area-etiquetas, body.printing-etiquetas #print-area-etiquetas * { visibility: visible; }
             body.printing-etiquetas #print-area-etiquetas { display: block; position: absolute; left: 0; top: 0; width: 100%; background: white; }
             
-            .etiqueta-page {
-                display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-                width: 40mm; height: 25mm; padding: 2mm; box-sizing: border-box; background: white;
-                page-break-after: always; overflow: hidden;
-            }
+            .etiqueta-page { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 40mm; height: 25mm; padding: 2mm; box-sizing: border-box; background: white; page-break-after: always; overflow: hidden; }
             .etiqueta-page:last-child { page-break-after: auto; }
-            
             .etiq-loja { font-size: 7pt; font-weight: 800; text-transform: uppercase; margin-bottom: 2px; }
             .etiq-cod { font-size: 14pt; font-weight: 900; letter-spacing: 1px; margin-bottom: 2px; border: 1px solid #000; padding: 1px 4px; border-radius: 3px; }
             .etiq-desc { font-size: 6pt; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
             .etiq-preco { font-size: 9pt; font-weight: 900; margin-top: 2px; }
 
-            /* ESTILOS DECORADOS COMUNS PARA PDF A4 */
-            .pdf-header { text-align: center; border-bottom: 4px solid #ec4899; padding-bottom: 15px; margin-bottom: 25px; }
+            /* ESTILOS DECORADOS COMUNS PARA PDF A4 NEUTRO */
+            .pdf-header { text-align: center; border-bottom: 4px solid #000; padding-bottom: 15px; margin-bottom: 25px; }
             .pdf-header h1 { font-size: 28px; color: #000; text-transform: uppercase; margin: 0; letter-spacing: 1px;}
-            .pdf-header h1 span { color: #ec4899; }
+            .pdf-header h1 span { color: #64748b; }
             
             .pdf-table { width: 100%; border-collapse: collapse; margin-top: 20px; border: 1px solid #e2e8f0; }
-            .pdf-table th { background-color: #fce7f3 !important; color: #be185d !important; padding: 12px; text-align: left; font-size: 14px; border-bottom: 3px solid #ec4899 !important; text-transform: uppercase;}
+            .pdf-table th { background-color: #f1f5f9 !important; color: #000 !important; padding: 12px; text-align: left; font-size: 14px; border-bottom: 3px solid #000 !important; text-transform: uppercase;}
             .pdf-table td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; color: #333; }
             .pdf-table tr:nth-child(even) td { background-color: #fafafa !important; }
-            .pdf-cod-destaque { font-size: 18px; font-weight: 900; color: #ec4899; }
+            .pdf-cod-destaque { font-size: 18px; font-weight: 900; color: #000; }
             .pdf-preco-destaque { font-size: 16px; font-weight: 800; color: #10b981; }
         }
 
@@ -185,13 +180,12 @@
         <div class="nav-item" onclick="showSection('lancamento')"><i class="fa-solid fa-cart-arrow-down"></i> Lançamento Rápido</div>
         <div class="nav-item" onclick="showSection('por-pessoa')"><i class="fa-solid fa-users"></i> Fechamento Sacolas</div>
         <div class="nav-item" onclick="showSection('logistica')"><i class="fa-solid fa-truck-fast"></i> Controle / Logística</div>
-        <div class="nav-item" onclick="showSection('nuvem')" style="border-top: 1px solid #333; margin-top: 1rem; padding-top: 1rem;"><i class="fa-brands fa-google-drive"></i> Nuvem (Google Drive)</div>
+        <div class="nav-item" onclick="showSection('nuvem')" style="border-top: 1px solid #333; margin-top: 1rem; padding-top: 1rem;"><i class="fa-solid fa-cloud"></i> Nuvem Sincronizada</div>
         <div class="nav-item" onclick="limparLive()" style="margin-top: auto; color: var(--danger);"><i class="fa-solid fa-trash-can"></i> Encerrar/Limpar Live</div>
     </div>
 
     <div class="main-content">
         
-        <!-- DASHBOARD -->
         <div id="dashboard" class="section active">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 2.5rem; gap: 15px;">
                 <h2 style="margin: 0;">Visão Geral da Live</h2>
@@ -199,9 +193,9 @@
             </div>
             
             <div class="grid-2">
-                <div class="card" style="border-left: 4px solid var(--accent); background: var(--primary); color: white;">
+                <div class="card" style="border-left: 4px solid #000; background: var(--primary); color: white;">
                     <h3 style="color: #94a3b8; font-size: 1rem;">Faturamento em Tempo Real</h3>
-                    <h2 id="dash-total-vendas" style="color: var(--accent); margin:0; font-size: 2.5rem;">R$ 0,00</h2>
+                    <h2 id="dash-total-vendas" style="color: #fff; margin:0; font-size: 2.5rem;">R$ 0,00</h2>
                 </div>
                 <div class="card" style="border-left: 4px solid var(--success);">
                     <h3 style="color: #64748b; font-size: 1rem;">Peças Arrematadas</h3>
@@ -220,11 +214,10 @@
             </div>
         </div>
 
-        <!-- ABA PEÇAS -->
         <div id="pecas" class="section">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 2.5rem; gap: 15px;">
                 <h2 style="margin: 0;">Estoque / Peças da Live</h2>
-                <button class="btn-outline" style="width: auto;" onclick="imprimirPDFPecas()"><i class="fa-solid fa-print"></i> Imprimir Catálogo Colorido (PDF)</button>
+                <button class="btn-outline" style="width: auto;" onclick="imprimirPDFPecas()"><i class="fa-solid fa-print"></i> Imprimir Catálogo (PDF)</button>
             </div>
             
             <div class="card">
@@ -243,7 +236,6 @@
                 </form>
             </div>
 
-            <!-- IMPRESSÃO EM MASSA DAS ETIQUETAS -->
             <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
                 <button class="btn-outline" style="width: auto; background: var(--primary); color: white; border: none;" onclick="imprimirEtiquetasEmMassa()"><i class="fa-solid fa-tags"></i> Imprimir Etiquetas Selecionadas (Argox)</button>
             </div>
@@ -267,12 +259,11 @@
             </div>
         </div>
 
-        <!-- ABA LANÇAMENTO -->
         <div id="lancamento" class="section">
             <h2>Lançamento Rápido</h2>
-            <p style="color: #64748b; margin-bottom: 2rem;">Digite <b>apenas o número</b> da peça (Ex: <strong style="color: var(--accent);">5</strong> busca a <strong>MF-005</strong>).</p>
+            <p style="color: #64748b; margin-bottom: 2rem;">Digite <b>apenas o número</b> da peça (Ex: <strong>5</strong> busca a <strong>MF-005</strong>).</p>
 
-            <div class="card" style="border: 2px solid var(--accent-light);">
+            <div class="card" style="border: 2px solid #e2e8f0;">
                 <form onsubmit="event.preventDefault(); registrarVenda();">
                     <div class="grid-2">
                         <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
@@ -284,16 +275,16 @@
                             </div>
                         </div>
 
-                        <div style="background: #fff; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--accent);">
-                            <h4 style="margin-bottom: 1rem; color: var(--accent);"><i class="fa-solid fa-tag"></i> Informações da Peça</h4>
+                        <div style="background: #fff; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid #000;">
+                            <h4 style="margin-bottom: 1rem; color: #000;"><i class="fa-solid fa-tag"></i> Informações da Peça</h4>
                             <div class="input-group">
-                                <label style="color: var(--accent);">Número do Código</label>
-                                <input type="text" id="venda-codigo-busca" required oninput="buscarPecaPorCodigo()" autocomplete="off" style="border-color: var(--accent); font-weight: bold; text-transform: uppercase; font-size: 1.2rem;">
+                                <label style="color: #000;">Número do Código</label>
+                                <input type="text" id="venda-codigo-busca" required oninput="buscarPecaPorCodigo()" autocomplete="off" style="border-color: #000; font-weight: bold; text-transform: uppercase; font-size: 1.2rem;">
                             </div>
-                            <div id="preview-peca" style="display: none; padding: 10px; background: var(--accent-light); border-radius: 8px; margin-bottom: 1rem; text-align: center;">
-                                <div style="font-weight: 900; color: var(--accent); font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 5px;" id="preview-codigo-real"></div>
+                            <div id="preview-peca" style="display: none; padding: 10px; background: #f1f5f9; border-radius: 8px; margin-bottom: 1rem; text-align: center;">
+                                <div style="font-weight: 900; color: #000; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 5px;" id="preview-codigo-real"></div>
                                 <div style="font-weight: 800; font-size: 1.1rem;" id="preview-nome"></div>
-                                <div style="color: #be185d; font-size: 0.9rem;" id="preview-cor"></div>
+                                <div style="color: #475569; font-size: 0.9rem;" id="preview-cor"></div>
                                 <div style="font-weight: 800; font-size: 1.4rem; margin-top: 5px;" id="preview-preco"></div>
                             </div>
                             <button type="submit" class="btn-success" id="btn-confirmar-venda" disabled><i class="fa-solid fa-check-circle"></i> Confirmar Arremate</button>
@@ -303,13 +294,11 @@
             </div>
         </div>
 
-        <!-- ABA VENDA POR PESSOA -->
         <div id="por-pessoa" class="section">
             <h2>Fechamento de Sacolas</h2>
             <div id="container-sacolas"></div>
         </div>
 
-        <!-- ABA CONTROLE E LOGÍSTICA -->
         <div id="logistica" class="section">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 2.5rem; gap: 15px;">
                 <h2 style="margin: 0;">Controle de Pagamentos e Envios</h2>
@@ -325,37 +314,37 @@
             </div>
         </div>
 
-        <!-- ABA NUVEM GOOGLE DRIVE -->
         <div id="nuvem" class="section">
-            <h2>Nuvem MF - Google Drive</h2>
-            <p style="color: #64748b; margin-bottom: 2rem;">Cole aqui o <b>Link do App da Web</b> gerado pela sua Planilha do Google para manter tudo salvo no seu Drive.</p>
-
-            <div class="card" style="border: 2px solid var(--accent-light); padding: 1.5rem;">
-                <div class="input-group" style="margin-bottom: 0;">
-                    <label>Link do Google Script (URL):</label>
-                    <input type="text" id="url-google-script" placeholder="https://script.google.com/macros/s/..." onchange="salvarLinkDrive()">
-                </div>
-            </div>
+            <h2>Nuvem MF - Sincronização</h2>
+            <p style="color: #64748b; margin-bottom: 2rem;">As informações da sua Live estão conectadas ao seu banco de dados privado. Clique em sincronizar para manter os dispositivos atualizados.</p>
 
             <div class="grid-2">
-                <div class="card" style="border-top: 4px solid var(--accent);">
-                    <h3>1. Fazer Backup no Drive</h3>
-                    <button class="btn-primary" id="btn-gerar-nuvem" onclick="salvarNoDrive()"><i class="fa-solid fa-cloud-arrow-up"></i> Salvar na Planilha</button>
-                    <div id="loading-nuvem" style="display:none; text-align:center; margin-top:10px;"><i class="fa-solid fa-spinner fa-spin"></i> Conectando...</div>
+                <div class="card" style="border-top: 4px solid #000;">
+                    <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-cloud-arrow-up" style="color: #000;"></i> Salvar na Nuvem</h3>
+                    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Envia as vendas e peças feitas neste dispositivo para o banco de dados online.</p>
+                    <button class="btn-primary" id="btn-gerar-nuvem" onclick="salvarNaNuvem()">Fazer Backup Online</button>
+                    <div id="loading-nuvem" style="display:none; text-align:center; margin-top:10px;"><i class="fa-solid fa-spinner fa-spin"></i> Salvando dados...</div>
                 </div>
-
                 <div class="card" style="border-top: 4px solid var(--success);">
-                    <h3>2. Puxar do Drive (Celular)</h3>
-                    <button class="btn-success" id="btn-baixar-nuvem" onclick="baixarDoDrive()"><i class="fa-solid fa-cloud-arrow-down"></i> Sincronizar Neste Aparelho</button>
-                    <div id="loading-baixar" style="display:none; text-align:center; margin-top:10px; color: var(--success);"><i class="fa-solid fa-spinner fa-spin"></i> Baixando dados...</div>
+                    <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-cloud-arrow-down" style="color: var(--success);"></i> Puxar da Nuvem</h3>
+                    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Baixa as informações mais recentes do seu banco de dados para este dispositivo.</p>
+                    <button class="btn-success" id="btn-baixar-nuvem" onclick="baixarDaNuvem()">Sincronizar Agora</button>
+                    <div id="loading-baixar" style="display:none; text-align:center; margin-top:10px; color: var(--success);"><i class="fa-solid fa-spinner fa-spin"></i> Puxando dados...</div>
                 </div>
             </div>
+
+            <div style="margin-top: 1rem;">
+                <details style="background: #f1f5f9; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer;">
+                    <summary style="font-weight: bold; color: #475569;">Opção Offline (Copiar Texto Compacto)</summary>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-top: 10px;">Caso a internet caia, gere o código abaixo e envie no WhatsApp para sincronizar manualmente.</p>
+                    <textarea id="sync-code-offline" rows="3" readonly style="width:100%; margin-top:10px; padding:10px; font-family:monospace; font-size:0.8rem;"></textarea>
+                    <button class="btn-outline" style="margin-top:10px; width: 100%;" onclick="gerarOffline()"><i class="fa-solid fa-file-zipper"></i> Gerar Texto Offline</button>
+                </details>
+            </div>
         </div>
+
     </div>
 
-    <!-- ÁREAS DE IMPRESSÃO (ESCONDIDAS) -->
-    
-    <!-- 1. CATÁLOGO A4 LINDINHO -->
     <div id="print-area-catalogo">
         <div class="pdf-header">
             <h1>MANIA FOREVER <span>LIVE SHOP</span></h1>
@@ -367,15 +356,14 @@
         </table>
     </div>
 
-    <!-- 2. RELATÓRIO A4 LINDINHO -->
     <div id="print-area-relatorio">
         <div class="pdf-header">
             <h1>MANIA FOREVER <span>FECHAMENTO DA LIVE</span></h1>
             <p id="pdf-data-hora-relatorio"></p>
         </div>
-        <div style="text-align:center; border: 3px solid #ec4899; background: #fce7f3; border-radius: 10px; padding: 15px; margin-bottom: 20px;">
-            <h3 style="margin: 0; color: #be185d;">FATURAMENTO TOTAL</h3>
-            <h2 id="pdf-relatorio-total" style="font-size: 32px; margin: 5px 0 0; color: #ec4899;"></h2>
+        <div style="text-align:center; border: 3px solid #000; background: #f1f5f9; border-radius: 10px; padding: 15px; margin-bottom: 20px;">
+            <h3 style="margin: 0; color: #000;">FATURAMENTO TOTAL</h3>
+            <h2 id="pdf-relatorio-total" style="font-size: 32px; margin: 5px 0 0; color: #000;"></h2>
         </div>
         <table class="pdf-table">
             <thead><tr><th>CLIENTE</th><th>TOTAL COMPRADO</th><th>STATUS PGTO</th><th>QTD PEÇAS</th></tr></thead>
@@ -383,10 +371,8 @@
         </table>
     </div>
 
-    <!-- 3. ETIQUETAS EM MASSA ARGOX -->
     <div id="print-area-etiquetas">
-        <!-- As etiquetas entram aqui dinamicamente -->
-    </div>
+        </div>
 
 <script>
     let dbLive = JSON.parse(localStorage.getItem('mania_forever_live_final')) || { pecas: [], vendas: [], status: {} };
@@ -479,7 +465,7 @@
         }, 500);
     }
 
-    // --- IMPRESSÕES PDFs A4 COLORIDOS ---
+    // --- IMPRESSÕES PDFs A4 ---
     function imprimirPDFPecas() {
         const tb = document.getElementById('pdf-tbody-catalogo'); tb.innerHTML = "";
         [...dbLive.pecas].sort((a,b) => a.preco - b.preco).forEach(p => {
@@ -587,7 +573,11 @@
         window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, '_blank');
     }
 
-    // --- NOVA NUVEM (GOOGLE DRIVE APPS SCRIPT) ---
+    // --- NOVA NUVEM (JSONBIN FIXA E SEGURA) ---
+    const minhaChaveJsonBin = "COLE_AQUI_A_SUA_CHAVE_MASTER_KEY"; 
+    const meuBinFixo = "COLE_AQUI_O_NOVO_BIN_FIXO"; 
+
+    // Compacta os dados para o envio ser muito mais leve
     function prepararPacote() {
         return {
             p: dbLive.pecas.map(x => [x.codigo, x.nome, x.cor, x.preco, x.vendida?1:0]),
@@ -596,6 +586,7 @@
         };
     }
     
+    // Descompacta os dados recebidos
     function desempacotarPacote(pct) {
         let nDb = { pecas: [], vendas: [], status: pct.s || {} };
         if(pct.p) nDb.pecas = pct.p.map(x => ({codigo:x[0], nome:x[1], cor:x[2], preco:x[3], vendida:x[4]===1}));
@@ -603,58 +594,78 @@
         return nDb;
     }
 
-    function salvarLinkDrive() {
-        const url = document.getElementById('url-google-script').value.trim();
-        localStorage.setItem('mania_forever_drive_url', url);
-    }
+    async function salvarNaNuvem() {
+        if(!meuBinFixo || meuBinFixo === "COLE_AQUI_O_NOVO_BIN_FIXO") {
+            return alert("Por favor, crie um NOVO Bin no JSONBin para a Mania Forever e coloque o ID no código index.html!");
+        }
 
-    async function salvarNoDrive() {
-        const url = document.getElementById('url-google-script').value.trim();
-        if(!url) return alert("Cole o Link do App da Web do Google Script primeiro!");
-        
         document.getElementById('btn-gerar-nuvem').style.display = 'none';
         document.getElementById('loading-nuvem').style.display = 'block';
         
         try {
-            const dataToSave = LZString.compressToBase64(JSON.stringify(prepararPacote()));
-            await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: dataToSave
+            const pacote = prepararPacote();
+            const resp = await fetch(`https://api.jsonbin.io/v3/b/${meuBinFixo}`, {
+                method: "PUT", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-Master-Key": minhaChaveJsonBin 
+                },
+                body: JSON.stringify(pacote)
             });
-            alert("Backup salvo no seu Google Drive com sucesso!");
+            
+            if(!resp.ok) throw new Error("Falha na API");
+            alert("Sucesso! Os dados da Live foram salvos no seu banco online.");
         } catch(e) { 
-            alert("Erro de conexão. Certifique-se de que configurou o Script como 'Qualquer Pessoa'."); 
+            alert("Erro ao conectar com a Nuvem. Tente novamente."); 
         }
         
         document.getElementById('btn-gerar-nuvem').style.display = 'inline-block';
         document.getElementById('loading-nuvem').style.display = 'none';
     }
 
-    async function baixarDoDrive() {
-        const url = document.getElementById('url-google-script').value.trim();
-        if(!url) return alert("Cole o Link do App da Web do Google Script primeiro!");
-        if(!confirm("Substituir dados atuais pelos da nuvem?")) return;
+    async function baixarDaNuvem() {
+        if(!meuBinFixo || meuBinFixo === "COLE_AQUI_O_NOVO_BIN_FIXO") {
+            return alert("Por favor, crie um NOVO Bin no JSONBin para a Mania Forever e coloque o ID no código index.html!");
+        }
 
+        if(!confirm("Tem certeza que deseja substituir os dados atuais pelos que estão salvos na nuvem?")) return;
+        
         document.getElementById('btn-baixar-nuvem').style.display = 'none';
         document.getElementById('loading-baixar').style.display = 'block';
         
         try {
-            const resp = await fetch(url);
-            const data64 = await resp.text();
+            const resp = await fetch(`https://api.jsonbin.io/v3/b/${meuBinFixo}/latest`, {
+                method: "GET",
+                headers: {
+                    "X-Master-Key": minhaChaveJsonBin
+                }
+            });
             
-            if(data64) {
-                dbLive = desempacotarPacote(JSON.parse(LZString.decompressFromBase64(data64)));
-                salvarBanco();
-                alert("Dados Sincronizados!");
-                showSection('dashboard');
-            } else { alert("Nenhum dado encontrado no Drive."); }
+            if(resp.ok) {
+                const data = await resp.json();
+                if(data.record && data.record.p && data.record.v) { 
+                    dbLive = desempacotarPacote(data.record);
+                    salvarBanco(); 
+                    alert("Sincronizado com sucesso!"); 
+                    showSection('dashboard');
+                } else { throw new Error("Formato de dados inválido"); }
+            } else { alert("Erro de acesso. Verifique a chave ou o ID do Bin."); }
         } catch(e) { 
-            alert("Erro ao baixar. O link pode estar incorreto."); 
+            alert("Erro ao puxar da nuvem. Verifique sua conexão."); 
         }
         
         document.getElementById('btn-baixar-nuvem').style.display = 'inline-block';
         document.getElementById('loading-baixar').style.display = 'none';
+    }
+
+    // 3. Offline (Texto Compactado da Live)
+    function gerarOffline() {
+        const pacote = prepararPacote();
+        const str = JSON.stringify(pacote);
+        const cod = LZString.compressToBase64(str);
+        const txt = document.getElementById('sync-code-offline');
+        txt.value = cod; txt.select(); navigator.clipboard.writeText(cod);
+        alert("Texto Offline gerado e copiado!");
     }
 
     // --- ATUALIZAR INTERFACE PRINCIPAL ---
@@ -665,7 +676,7 @@
         [...dbLive.pecas].sort((a,b) => a.preco - b.preco).forEach(p => {
             tPecas.innerHTML += `<tr>
                 <td style="text-align: center;"><input type="checkbox" class="check-peca" value="${p.codigo}"></td>
-                <td><span class="badge bg-pink">${p.codigo}</span></td>
+                <td><span class="badge bg-dark">${p.codigo}</span></td>
                 <td><strong>${p.nome}</strong> ${p.vendida?'<span class="badge bg-red">Vendida</span>':'<span class="badge bg-green">Livre</span>'}</td>
                 <td style="font-size:0.8rem; color:#64748b">${p.cor}</td>
                 <td style="color:var(--success); font-weight:bold;">${formatarMoeda(p.preco)}</td>
@@ -678,7 +689,7 @@
         let tFat = 0; const tDash = document.getElementById('lista-ultimas-vendas'); tDash.innerHTML = "";
         dbLive.vendas.slice().reverse().forEach(v => {
             tFat += v.precoFinal;
-            tDash.innerHTML += `<tr><td><strong>${v.clienteNome}</strong></td><td><span style="color:var(--accent); font-weight:800; font-size:0.8rem;">${v.codigoPeca}</span><br>${v.nomePeca}</td><td>${v.corPeca}</td><td style="text-align: right; font-weight:bold; color:var(--success);">${formatarMoeda(v.precoFinal)}</td></tr>`;
+            tDash.innerHTML += `<tr><td><strong>${v.clienteNome}</strong></td><td><span style="color:var(--primary); font-weight:800; font-size:0.8rem;">${v.codigoPeca}</span><br>${v.nomePeca}</td><td>${v.corPeca}</td><td style="text-align: right; font-weight:bold; color:var(--success);">${formatarMoeda(v.precoFinal)}</td></tr>`;
         });
         document.getElementById('dash-total-vendas').innerText = formatarMoeda(tFat);
         document.getElementById('dash-qtd-pecas').innerText = dbLive.vendas.length;
@@ -689,18 +700,18 @@
         
         Object.keys(sacolas).forEach(k => {
             const s = sacolas[k];
-            let mC = `Oiii *${s.nome}*! Tudo bem? 💖✨\n\nResumo da Live! 🥰🛍️\n\n`;
+            let mC = `Oiii *${s.nome}*! Tudo bem? 🖤✨\n\nResumo da Live! 🥰🛍️\n\n`;
             let hP = '';
             s.pecas.forEach(p => { 
                 mC += `👗 *${p.codigoPeca}* | ${p.nomePeca}\n👉 *${formatarMoeda(p.precoFinal)}*\n\n`;
                 hP += `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
-                    <div><span class="badge bg-pink" style="font-size:0.6rem; margin-right:5px;">${p.codigoPeca}</span> ${p.nomePeca}</div>
+                    <div><span class="badge bg-dark" style="font-size:0.6rem; margin-right:5px;">${p.codigoPeca}</span> ${p.nomePeca}</div>
                     <div><strong>${formatarMoeda(p.precoFinal)}</strong> <button onclick="deletarVenda(${p.id})" style="background:none;border:none;color:var(--danger);cursor:pointer;"><i class="fa-solid fa-xmark"></i></button></div>
                 </div>`;
             });
             mC += `💰 *TOTAL: ${formatarMoeda(s.total)}*\n\n⚠️ Prazo de *24 horas* para pagamento! ⏳\n\nMe conta: *Qual a forma de pagamento* e prefere *retirada ou envio*? 📦🚗\n\n_(Lembrando das taxas nas maquininhas)_ 😉😘`;
-            let mA = `Oiii *${s.nome}*! 🥺 Sua sacola aguarda fechamento.\n\n⚠️ Cancelamentos sem aviso fazem com que você *perca a prioridade* nas próximas Lives. 😔\n\nMe avisa se podemos finalizar! 💖`;
-            let mP = `Oiii *${s.nome}*! 🥰💖\n\nObrigada de coração por garantir suas peças! Foi incrível ter você. ✨🛍️\n\nEspero que ame tudo e não esquece de marcar a gente no Instagram! 😍📸\n\nBeijão! 😘💖`;
+            let mA = `Oiii *${s.nome}*! 🥺 Sua sacola aguarda fechamento.\n\n⚠️ Cancelamentos sem aviso fazem com que você *perca a prioridade* nas próximas Lives. 😔\n\nMe avisa se podemos finalizar! 🖤`;
+            let mP = `Oiii *${s.nome}*! 🥰🖤\n\nObrigada de coração por garantir suas peças! Foi incrível ter você. ✨🛍️\n\nEspero que ame tudo e não esquece de marcar a gente no Instagram! 😍📸\n\nBeijão! 😘🖤`;
 
             let lC = `https://wa.me/55${s.fone.replace(/\D/g,'')}?text=${encodeURIComponent(mC)}`;
             let lA = `https://wa.me/55${s.fone.replace(/\D/g,'')}?text=${encodeURIComponent(mA)}`;
@@ -712,7 +723,7 @@
                 <div class="zap-group">
                     <a href="${lC}" target="_blank" class="btn-whatsapp zap-cobranca" style="${btnSt}"><i class="fa-brands fa-whatsapp"></i> Cobrar</a>
                     <a href="${lA}" target="_blank" class="btn-whatsapp zap-aviso" style="${btnSt}">Aviso Canc.</a>
-                    <a href="${lP}" target="_blank" class="btn-whatsapp zap-posvenda" style="${btnSt}"><i class="fa-solid fa-heart"></i> Pós-Venda</a>
+                    <a href="${lP}" target="_blank" class="btn-whatsapp zap-posvenda" style="${btnSt}; background: var(--primary);"><i class="fa-solid fa-heart"></i> Pós-Venda</a>
                 </div></div>`;
 
             let st = dbLive.status[k] || {pago:false, forma:"", entrega:"Aguardando"};
@@ -735,7 +746,6 @@
     }
 
     window.onload = () => { 
-        document.getElementById('url-google-script').value = localStorage.getItem('mania_forever_drive_url') || '';
         atualizarTelas(); 
         showSection('dashboard'); 
     };
