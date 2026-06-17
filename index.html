@@ -574,7 +574,7 @@
     }
 
     // --- NOVA NUVEM (JSONBIN FIXA E SEGURA) ---
-    const minhaChaveJsonBin = "$2a$10$QfKPYkxFybMfZ65O9epthuCSIf2hCkpsM/4mhlSgwzXDv/EQf4JKe"; 
+    const minhaChaveJsonBin = "$2a$10$HQKFVyr/u0vhq9ecUhcel.E/EHaqe/Xip1rvRroEFH/EHZ3S.xWuC"; 
     const meuBinFixo = "6a312431da38895dfec8dd74"; 
 
     // Compacta os dados para o envio ser muito mais leve
@@ -595,10 +595,6 @@
     }
 
     async function salvarNaNuvem() {
-        if(!meuBinFixo || meuBinFixo === "6a312431da38895dfec8dd74") {
-            return alert("Por favor, crie um NOVO Bin no JSONBin para a Mania Forever e coloque o ID no código index.html!");
-        }
-
         document.getElementById('btn-gerar-nuvem').style.display = 'none';
         document.getElementById('loading-nuvem').style.display = 'block';
         
@@ -608,7 +604,7 @@
                 method: "PUT", 
                 headers: { 
                     "Content-Type": "application/json", 
-                    "X-Master-Key": minhaChaveJsonBin 
+                    "X-Access-Key": minhaChaveJsonBin 
                 },
                 body: JSON.stringify(pacote)
             });
@@ -624,10 +620,6 @@
     }
 
     async function baixarDaNuvem() {
-        if(!meuBinFixo || meuBinFixo === "6a312431da38895dfec8dd74") {
-            return alert("Por favor, crie um NOVO Bin no JSONBin para a Mania Forever e coloque o ID no código index.html!");
-        }
-
         if(!confirm("Tem certeza que deseja substituir os dados atuais pelos que estão salvos na nuvem?")) return;
         
         document.getElementById('btn-baixar-nuvem').style.display = 'none';
@@ -637,7 +629,7 @@
             const resp = await fetch(`https://api.jsonbin.io/v3/b/${meuBinFixo}/latest`, {
                 method: "GET",
                 headers: {
-                    "X-Master-Key": minhaChaveJsonBin
+                    "X-Access-Key": minhaChaveJsonBin
                 }
             });
             
